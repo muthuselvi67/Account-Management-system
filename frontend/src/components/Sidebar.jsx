@@ -22,7 +22,12 @@ import {
   Plane,
   Utensils,
   Fuel,
-  Package
+  Package,
+  Building2,
+  TrendingDown,
+  Users2,
+  Cog,
+  Percent
 } from 'lucide-react';
 
 const mainNavItems = [
@@ -35,6 +40,11 @@ const financialItems = [
   { name: 'Claims', path: '/claims', icon: ClipboardCheck },
   { name: 'Payments', path: '/payments', icon: CreditCard },
   { name: 'Expenses', path: '/expenses', icon: Receipt },
+  { name: 'Operational Expenses', path: '/operational-expenses', icon: Building2 },
+  { name: 'Running Costs', path: '/running-costs', icon: TrendingDown },
+  { name: 'Employee Costs', path: '/employee-running-costs', icon: Users2 },
+  { name: 'Operational Costs', path: '/operational-running-costs', icon: Cog },
+  { name: 'GST', path: '/gst', icon: Percent },
   { name: 'Salaries', path: '/salaries', icon: Wallet },
   { name: 'Invoices', path: '/invoices', icon: FileText },
   { name: 'Reports', path: '/reports', icon: BarChart3 },
@@ -55,14 +65,14 @@ export default function Sidebar({ isOpen, toggleSidebar, openSettings }) {
       )}
 
       {/* Sidebar */}
-      <aside className={`fixed inset-y-0 left-0 z-50 bg-white dark:bg-zinc-950 border-r border-slate-200 dark:border-dark-700 transform transition-all duration-300 ease-in-out lg:static lg:inset-auto flex flex-col ${isOpen ? 'translate-x-0 w-64' : '-translate-x-[120%] w-64 lg:translate-x-0 lg:w-20'}`}>
+      <aside className={`fixed inset-y-0 left-0 z-50 bg-white dark:bg-zinc-950 border-r border-slate-200 dark:border-dark-700 transform transition-all duration-300 ease-in-out lg:static lg:inset-auto flex flex-col h-screen ${isOpen ? 'translate-x-0 w-64' : '-translate-x-[120%] w-64 lg:translate-x-0 lg:w-20'}`}>
 
         <div className="flex items-center justify-between h-20 px-6 border-b border-slate-200 dark:border-dark-700/50 shrink-0">
           <div className="flex items-center gap-2 text-slate-800 dark:text-white overflow-hidden">
             <div className="w-8 h-8 shrink-0 bg-violet-600 rounded-lg shadow-sm flex items-center justify-center text-white">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-                <path d="M9 6v9c0 1.5 1 2.5 2.5 3" />
-                <path d="M15 6v9c0 1.5 1 2.5 2.5 3" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
+                <path d="M8 6v9a2 2 0 0 0 2 2" />
+                <path d="M14 6v9a2 2 0 0 0 2 2" />
               </svg>
             </div>
             <span className={`text-xl font-bold tracking-tight whitespace-nowrap transition-opacity duration-300 ${!isOpen ? 'lg:opacity-0 lg:hidden' : 'opacity-100'}`}>Learnlike<sup className="font-normal text-sm">&reg;</sup></span>

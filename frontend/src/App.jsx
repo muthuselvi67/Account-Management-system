@@ -12,6 +12,11 @@ import Reports from './pages/Reports';
 import Users from './pages/Users';
 import Calendar from './pages/Calendar';
 import ClaimsPlaceholder from './pages/ClaimsPlaceholder';
+import OperationalExpenses from './pages/OperationalExpenses';
+import RunningCosts from './pages/RunningCosts';
+import EmployeeRunningCosts from './pages/EmployeeRunningCosts';
+import OperationalRunningCosts from './pages/OperationalRunningCosts';
+import GST from './pages/GST';
 
 function App() {
   return (
@@ -34,6 +39,11 @@ function App() {
 
           {/* Claims Route */}
           <Route path="claims" element={<ClaimsPlaceholder />} />
+          <Route path="operational-expenses" element={<OperationalExpenses />} />
+          <Route path="running-costs" element={<RunningCosts />} />
+          <Route path="employee-running-costs" element={<EmployeeRunningCosts />} />
+          <Route path="operational-running-costs" element={<OperationalRunningCosts />} />
+          <Route path="gst" element={<GST />} />
 
         </Route>
         

@@ -158,6 +158,17 @@ export default function Salaries() {
             </div>
             <div className="p-6 space-y-4">
               <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
+                <select className="input-field py-2" value={newSalary.category || ''} onChange={(e) => setNewSalary({ ...newSalary, category: e.target.value })}>
+                  <option value="" disabled>Select a category...</option>
+                  <option value="Employee Claims">📋 Employee Claims</option>
+                  <option value="Allowances">💰 Allowances</option>
+                  <option value="Bonus">🎁 Bonus</option>
+                  <option value="PF & ESI">🏦 PF &amp; ESI</option>
+                  <option value="Reports">📊 Reports</option>
+                </select>
+              </div>
+              <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Trainer Name</label>
                 <input type="text" className="input-field" value={newSalary.trainer} onChange={(e) => setNewSalary({ ...newSalary, trainer: e.target.value })} />
               </div>

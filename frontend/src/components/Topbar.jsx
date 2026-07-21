@@ -1,4 +1,4 @@
-import { Menu, Bell, Search, Sun, Moon, LogOut, User, Settings, Lock, X, Loader2, Upload } from 'lucide-react';
+import { Menu, ArrowLeft, Search, Sun, Moon, LogOut, User, Settings, Lock, X, Loader2, Upload } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -97,13 +97,6 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
         </div>
 
         <div className="flex items-center gap-4">
-          <button className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-dark-800 rounded-xl transition-colors relative">
-            <Bell size={20} />
-            <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full border border-white dark:border-dark-800">
-              4
-            </span>
-          </button>
-          
           <button 
             onClick={toggleTheme}
             className="p-2 text-slate-500 hover:bg-slate-100 dark:text-amber-400 dark:hover:bg-dark-800 rounded-xl transition-colors"
