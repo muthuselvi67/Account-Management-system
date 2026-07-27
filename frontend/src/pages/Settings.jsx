@@ -118,12 +118,10 @@ export default function Settings() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Full Name</label>
-                  <input type="text" defaultValue="Deepak R" className="input-field" />
+                  <input type="text" defaultValue="Admin" className="input-field" />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Email Address</label>
-                  <input type="email" defaultValue="deepak.r@learnlike.com" className="input-field" />
+                  <input type="email" defaultValue="admin@example.com" className="input-field" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Phone Number</label>

@@ -17,6 +17,17 @@ import RunningCosts from './pages/RunningCosts';
 import EmployeeRunningCosts from './pages/EmployeeRunningCosts';
 import OperationalRunningCosts from './pages/OperationalRunningCosts';
 import GST from './pages/GST';
+import CreateInvoice from './pages/CreateInvoice';
+import InvoiceHistory from './pages/InvoiceHistory';
+import CompanyProfile from './pages/CompanyProfile';
+
+const ProtectedRoute = ({ children }) => {
+  const isAuthenticated = localStorage.getItem('userRole');
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  return children;
+};
 
 function App() {
   return (
@@ -25,7 +36,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         
         {/* Protected Routes inside Layout */}
-        <Route path="/" element={<Layout />}>
+        <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
           <Route index element={<Dashboard />} />
           <Route path="students" element={<Students />} />
           <Route path="payments" element={<Payments />} />
@@ -44,6 +55,9 @@ function App() {
           <Route path="employee-running-costs" element={<EmployeeRunningCosts />} />
           <Route path="operational-running-costs" element={<OperationalRunningCosts />} />
           <Route path="gst" element={<GST />} />
+          <Route path="create-invoice" element={<CreateInvoice />} />
+          <Route path="invoice-history" element={<InvoiceHistory />} />
+          <Route path="company-profile" element={<CompanyProfile />} />
 
         </Route>
         

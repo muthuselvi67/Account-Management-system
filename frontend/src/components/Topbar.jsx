@@ -8,7 +8,7 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [profileData, setProfileData] = useState({
-    email: 'deepak.ravikumar@learnlike.co.in',
+    email: 'admin@example.com',
     employeeId: 'EMP-0087',
     department: 'Administration',
     position: 'Chief Executive Officer'
@@ -115,9 +115,6 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
                 </div>
                 <div className="hidden md:block text-left">
                   <p className="text-sm font-bold text-slate-800 dark:text-white leading-tight uppercase">
-                    Deepak R
-                  </p>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 uppercase">
                     Admin
                   </p>
                 </div>
@@ -132,9 +129,6 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
                     </div>
                     <div>
                       <p className="text-sm font-bold text-slate-800 dark:text-white uppercase leading-tight">
-                        Deepak R
-                      </p>
-                      <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 uppercase mt-0.5">
                         Admin
                       </p>
                     </div>
@@ -171,7 +165,10 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
 
                   <div className="p-2 border-t border-slate-100 dark:border-dark-800">
                     <button
-                      onClick={() => navigate('/login')}
+                      onClick={() => {
+                        localStorage.removeItem('userRole');
+                        navigate('/login');
+                      }}
                       className="w-full flex items-center gap-3 px-4 py-2.5 text-sm font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
                     >
                       <LogOut size={18} />
@@ -182,7 +179,10 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
               )}
             </div>
             <button
-              onClick={() => navigate('/login')}
+              onClick={() => {
+                localStorage.removeItem('userRole');
+                navigate('/login');
+              }}
               className="ml-4 p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-xl transition-colors"
               title="Sign out"
             >
@@ -213,11 +213,8 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
                 </div>
               </div>
               <h3 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-wide">
-                Deepak R
-              </h3>
-              <span className="mt-2 px-4 py-1 bg-violet-100 dark:bg-violet-500/20 text-violet-600 dark:text-violet-400 text-xs font-bold rounded-full uppercase tracking-widest">
                 Admin
-              </span>
+              </h3>
 
               <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8 text-left">
                 <div className="bg-slate-50 dark:bg-dark-800/50 p-4 rounded-xl border border-slate-100 dark:border-dark-700/50">

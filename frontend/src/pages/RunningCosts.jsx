@@ -1,29 +1,45 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { TrendingDown, X } from 'lucide-react';
+import api from '../api/axios';
 
 export default function RunningCosts() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [costs, setCosts] = useState(() => {
-    const saved = localStorage.getItem('runningCosts');
-    return saved ? JSON.parse(saved) : [];
-  });
-  const [newCost, setNewCost] = useState({ category: '', amount: '', frequency: '', date: '', description: '' });
+  const [costs, setCosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [newCost, setNewCost] = useState({ id: '', category: '', amount: '', frequency: '', date: '', description: '' });
+
+  const fetchCosts = async () => {
+    try {
+      const response = await api.get('/running_costs/read.php');
+      setCosts(Array.isArray(response.data) ? response.data : []);
+      setLoading(false);
+    } catch (err) {
+      console.error("Failed to fetch running costs", err);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    localStorage.setItem('runningCosts', JSON.stringify(costs));
-  }, [costs]);
+    fetchCosts();
+  }, []);
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!newCost.category || !newCost.amount) return;
     const cost = {
       ...newCost,
-      id: `RNC-${Math.floor(1000 + Math.random() * 9000)}`,
-      submittedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      rc_id: newCost.id || `RNC-${Math.floor(1000 + Math.random() * 9000)}`
     };
-    setCosts([cost, ...costs]);
-    setIsModalOpen(false);
-    setNewCost({ category: '', amount: '', frequency: '', date: '', description: '' });
+    
+    try {
+      await api.post('/running_costs/create.php', cost);
+      fetchCosts();
+      setIsModalOpen(false);
+      setNewCost({ id: '', category: '', amount: '', frequency: '', date: '', description: '' });
+    } catch (err) {
+      console.error("Failed to add cost", err);
+      alert("Failed to add cost. Please try again.");
+    }
   };
 
   const modal = (
@@ -39,6 +55,10 @@ export default function RunningCosts() {
             <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><X size={20} /></button>
           </div>
           <div className="p-6 space-y-4 overflow-y-auto">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Running Cost ID</label>
+              <input type="text" className="input-field" value={newCost.id} onChange={(e) => setNewCost({ ...newCost, id: e.target.value })} />
+            </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
               <select className="input-field py-2" value={newCost.category} onChange={(e) => setNewCost({ ...newCost, category: e.target.value })}>

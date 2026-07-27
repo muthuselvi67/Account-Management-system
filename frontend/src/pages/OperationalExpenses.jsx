@@ -8,7 +8,7 @@ export default function OperationalExpenses() {
     const saved = localStorage.getItem('operationalExpenses');
     return saved ? JSON.parse(saved) : [];
   });
-  const [newExpense, setNewExpense] = useState({ category: '', amount: '', date: '', description: '' });
+  const [newExpense, setNewExpense] = useState({ id: '', category: '', amount: '', date: '', description: '' });
 
   useEffect(() => {
     localStorage.setItem('operationalExpenses', JSON.stringify(expenses));
@@ -18,12 +18,12 @@ export default function OperationalExpenses() {
     if (!newExpense.category || !newExpense.amount) return;
     const expense = {
       ...newExpense,
-      id: `OPX-${Math.floor(1000 + Math.random() * 9000)}`,
+      id: newExpense.id || `OPX-${Math.floor(1000 + Math.random() * 9000)}`,
       submittedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
     };
     setExpenses([expense, ...expenses]);
     setIsModalOpen(false);
-    setNewExpense({ category: '', amount: '', date: '', description: '' });
+    setNewExpense({ id: '', category: '', amount: '', date: '', description: '' });
   };
 
   const modal = (
@@ -39,6 +39,10 @@ export default function OperationalExpenses() {
             <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><X size={20} /></button>
           </div>
           <div className="p-6 space-y-4 overflow-y-auto">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Expense ID</label>
+              <input type="text" className="input-field" value={newExpense.id} onChange={(e) => setNewExpense({ ...newExpense, id: e.target.value })} />
+            </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
               <select className="input-field py-2" value={newExpense.category} onChange={(e) => setNewExpense({ ...newExpense, category: e.target.value })}>

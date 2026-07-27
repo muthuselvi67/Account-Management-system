@@ -110,12 +110,12 @@ export default function Expenses() {
             <div className="p-6 space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Category</label>
-                <input type="text" className="input-field" placeholder="e.g. Office Rent" value={newExpense.category} onChange={(e) => setNewExpense({ ...newExpense, category: e.target.value })} />
+                <input type="text" className="input-field" value={newExpense.category} onChange={(e) => setNewExpense({ ...newExpense, category: e.target.value })} />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Amount (₹)</label>
-                  <input type="text" className="input-field" placeholder="₹0" value={newExpense.amount} onChange={(e) => setNewExpense({ ...newExpense, amount: e.target.value })} />
+                  <input type="text" className="input-field" value={newExpense.amount} onChange={(e) => setNewExpense({ ...newExpense, amount: e.target.value })} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Date</label>
@@ -124,7 +124,7 @@ export default function Expenses() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description</label>
-                <input type="text" className="input-field" placeholder="e.g. July Month Rent" value={newExpense.desc} onChange={(e) => setNewExpense({ ...newExpense, desc: e.target.value })} />
+                <input type="text" className="input-field" value={newExpense.desc} onChange={(e) => setNewExpense({ ...newExpense, desc: e.target.value })} />
               </div>
               <button onClick={handleSaveExpense} className="btn-primary bg-red-500 hover:bg-red-600 shadow-red-500/30 w-full mt-2 py-2.5">Save Expense</button>
             </div>

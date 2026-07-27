@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Search, Plus, Wallet, UserCircle, X } from 'lucide-react';
+import { jsPDF } from 'jspdf';
 
 export default function Salaries() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -47,14 +48,24 @@ export default function Salaries() {
 
   const handleSalaryAction = (salary) => {
     if (salary.status === 'Paid') {
-      const slipContent = `data:text/plain;charset=utf-8,Payslip for ${salary.trainer}\nMonth: ${salary.month}\nBase: ${salary.base}\nBonus: +${salary.bonus}\nDeductions: -${salary.ded}\nNet Pay: ${salary.net}`;
-      const encodedUri = encodeURI(slipContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `payslip_${salary.trainer.replace(/\s+/g, '_')}.txt`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      const doc = new jsPDF();
+      doc.setFontSize(22);
+      doc.text("Salary Slip", 105, 20, null, null, "center");
+      
+      doc.setFontSize(14);
+      doc.text(`Employee: ${salary.trainer}`, 20, 40);
+      doc.text(`Month: ${salary.month}`, 20, 50);
+      
+      doc.text("Earnings & Deductions", 20, 70);
+      doc.setFontSize(12);
+      doc.text(`Base Salary: ${salary.base}`, 20, 80);
+      doc.text(`Bonus: +${salary.bonus}`, 20, 90);
+      doc.text(`Deductions: -${salary.ded}`, 20, 100);
+      
+      doc.setFontSize(16);
+      doc.text(`Net Pay: ${salary.net}`, 20, 120);
+      
+      doc.save(`payslip_${salary.trainer.replace(/\s+/g, '_')}.pdf`);
     } else {
       setSalaries(salaries.map(s => s.id === salary.id ? { ...s, status: 'Paid' } : s));
     }

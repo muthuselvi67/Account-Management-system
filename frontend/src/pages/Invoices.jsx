@@ -216,7 +216,7 @@ export default function Invoices() {
         <div className="flex gap-2">
           {['All', 'Paid', 'Unpaid', 'Overdue'].map(s => (
             <button key={s} onClick={() => setStatusFilter(s)}
-              className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${statusFilter === s ? 'bg-violet-600 text-white' : 'bg-white dark:bg-dark-800 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-dark-700'}`}>
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all border ${statusFilter === s ? 'bg-violet-600 border-violet-600 text-white shadow-sm' : 'bg-white dark:bg-dark-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-dark-700 hover:bg-slate-50 dark:hover:bg-dark-800/80'}`}>
               {s}
             </button>
           ))}

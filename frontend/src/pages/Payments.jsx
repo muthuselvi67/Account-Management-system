@@ -17,16 +17,16 @@ export default function Payments() {
   const [search, setSearch] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [newPay, setNewPay] = useState({ payer: '', amount: '', method: 'UPI', date: '', ref: '', status: 'Completed', note: '' });
+  const [newPay, setNewPay] = useState({ id: '', payer: '', amount: '', method: 'UPI', date: '', ref: '', status: 'Completed', note: '' });
 
   useEffect(() => { localStorage.setItem('paymentsData', JSON.stringify(payments)); }, [payments]);
 
   const handleSave = () => {
     if (!newPay.payer || !newPay.amount) return;
-    const pay = { ...newPay, amount: parseFloat(newPay.amount), id: `PAY-${Math.floor(1000 + Math.random() * 9000)}` };
+    const pay = { ...newPay, amount: parseFloat(newPay.amount), id: newPay.id || `PAY-${Math.floor(1000 + Math.random() * 9000)}` };
     setPayments([pay, ...payments]);
     setIsModalOpen(false);
-    setNewPay({ payer: '', amount: '', method: 'UPI', date: '', ref: '', status: 'Completed', note: '' });
+    setNewPay({ id: '', payer: '', amount: '', method: 'UPI', date: '', ref: '', status: 'Completed', note: '' });
   };
 
   const handleExport = () => {
@@ -66,6 +66,10 @@ export default function Payments() {
             <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600"><X size={20} /></button>
           </div>
           <div className="p-6 space-y-4 overflow-y-auto">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Payment ID</label>
+              <input type="text" className="input-field" value={newPay.id} onChange={(e) => setNewPay({ ...newPay, id: e.target.value })} />
+            </div>
             <div>
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Payer Name</label>
               <input type="text" className="input-field" placeholder="e.g. Rahul Sharma" value={newPay.payer} onChange={(e) => setNewPay({ ...newPay, payer: e.target.value })} />
