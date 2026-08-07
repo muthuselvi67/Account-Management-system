@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Plus, FolderKanban, FolderCheck, Users, Calendar, ArrowRight, X } from 'lucide-react';
+import { Search, Plus, FolderKanban, FolderCheck, Users, Calendar, ArrowRight, X, Trash2 } from 'lucide-react';
 
 export default function Projects() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -8,6 +8,7 @@ export default function Projects() {
   const [isEditingProject, setIsEditingProject] = useState(false);
   const [editProjectData, setEditProjectData] = useState(null);
   const [newProject, setNewProject] = useState({ title: '', client: '', cost: '', deadline: '' });
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
 
   const initialProjects = [
     { id: 'PRJ-01', title: 'E-commerce App', type: 'Final Year', client: 'NIT Students', cost: '₹25,000', advance: '₹10,000', balance: '₹15,000', status: 'Ongoing', deadline: 'Aug 15, 2026' },
@@ -28,6 +29,16 @@ export default function Projects() {
     setProjectsList(projectsList.map(p => p.id === editProjectData.id ? editProjectData : p));
     setSelectedProject(editProjectData);
     setIsEditingProject(false);
+  };
+
+  const confirmDelete = () => {
+    if (deleteConfirmId) {
+      setProjectsList(projectsList.filter(p => p.id !== deleteConfirmId));
+      setDeleteConfirmId(null);
+      if (selectedProject?.id === deleteConfirmId) {
+        setSelectedProject(null);
+      }
+    }
   };
 
   const handleCreateProject = () => {
@@ -86,13 +97,22 @@ export default function Projects() {
               }`}>
                 {project.status === 'Completed' ? <FolderCheck size={24} /> : <FolderKanban size={24} />}
               </div>
-              <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                project.status === 'Completed' 
-                  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' 
-                  : 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400'
-              }`}>
-                {project.status}
-              </span>
+              <div className="flex items-center gap-2">
+                <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  project.status === 'Completed' 
+                    ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/20 dark:text-emerald-400' 
+                    : 'bg-amber-100 text-amber-700 dark:bg-amber-500/20 dark:text-amber-400'
+                }`}>
+                  {project.status}
+                </span>
+                <button 
+                  onClick={() => setDeleteConfirmId(project.id)} 
+                  className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors"
+                  title="Delete Project"
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
             </div>
             
             <h3 className="text-lg font-bold text-slate-900 dark:text-white">{project.title}</h3>
@@ -252,11 +272,28 @@ export default function Projects() {
                   </>
                 ) : (
                   <>
-                    <button onClick={() => setSelectedProject(null)} className="btn-secondary flex-1 py-2.5">Close</button>
+                    <button onClick={() => setDeleteConfirmId(selectedProject.id)} className="btn-secondary flex-1 py-2.5 text-red-500 hover:text-red-600 border-red-200 hover:bg-red-50">Delete</button>
                     <button onClick={() => setIsEditingProject(true)} className="btn-primary flex-1 py-2.5">Edit Project</button>
                   </>
                 )}
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmId && (
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="bg-white dark:bg-dark-900 rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center animate-scale-in">
+            <div className="w-16 h-16 bg-violet-100 dark:bg-violet-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-violet-600 dark:text-violet-400">
+              <Trash2 size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Delete Project?</h3>
+            <p className="text-slate-500 dark:text-slate-400 mb-6">Are you sure you want to delete this project? This action cannot be undone.</p>
+            <div className="flex gap-3">
+              <button onClick={() => setDeleteConfirmId(null)} className="flex-1 btn-secondary py-2.5">Cancel</button>
+              <button onClick={confirmDelete} className="flex-1 btn-primary bg-violet-600 hover:bg-violet-700 py-2.5 border-0">Yes, Delete</button>
             </div>
           </div>
         </div>

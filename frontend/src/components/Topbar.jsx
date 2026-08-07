@@ -7,6 +7,7 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const [profileData, setProfileData] = useState({
     email: 'admin@example.com',
     employeeId: 'EMP-0087',
@@ -53,6 +54,8 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
         return { title: 'Employee Documents', subtitle: 'Securely store and manage employee records' };
       case '/hr/performance':
         return { title: 'Performance Reviews', subtitle: 'Evaluate and track employee performance' };
+      case '/vendor-pos':
+        return { title: 'Vendor POs', subtitle: 'Track and manage purchase orders issued to vendors' };
       default: {
         const path = location.pathname.split('/').pop();
         if (path) {
@@ -94,6 +97,25 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
             <h2 className="text-lg font-bold text-slate-800 dark:text-white leading-tight">{title}</h2>
             <p className="text-xs text-slate-500 dark:text-slate-400">{subtitle}</p>
           </div>
+        </div>
+
+        {/* Global Search Bar */}
+        <div className="hidden md:flex flex-1 max-w-md mx-6 relative">
+          <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <Search size={17} />
+          </div>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search anything..."
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-100 dark:bg-dark-800 border border-slate-200 dark:border-dark-700 rounded-xl text-sm text-slate-700 dark:text-slate-300 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
+          />
+          {searchQuery && (
+            <button onClick={() => setSearchQuery('')} className="absolute inset-y-0 right-0 pr-3 flex items-center text-slate-400 hover:text-slate-600">
+              <X size={16} />
+            </button>
+          )}
         </div>
 
         <div className="flex items-center gap-4">

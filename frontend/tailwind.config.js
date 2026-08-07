@@ -8,13 +8,17 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: {
+        violet: {
           50: '#f5f3ff',
           100: '#ede9fe',
+          200: '#ddd6fe',
+          300: '#c4b5fd',
+          400: '#a78bfa',
           500: '#8b5cf6',
-          600: '#7c3aed',
-          700: '#6d28d9',
-          900: '#4c1d95',
+          600: '#6f42c1',
+          700: '#58359a',
+          800: '#462a7a',
+          900: '#3b2466',
         },
         emerald: {
           50: '#ecfdf5',

@@ -5,11 +5,22 @@ import { useNavigate } from 'react-router-dom';
 export default function CreateInvoice() {
   const navigate = useNavigate();
   const [invoice, setInvoice] = useState({
+    clientId: '',
     client: '',
-    date: new Date().toISOString().split('T')[0],
+    contactPerson: '',
+    email: '',
+    phone: '',
+    gstNumber: '',
+    panNumber: '',
+    address: '',
+    date: '',
     dueDate: '',
-    gstRate: '18',
-    note: ''
+    gstRate: '',
+    note: '',
+    poNumber: '',
+    paymentTerms: 'Net 30',
+    bankDetails: '',
+    invoiceNumber: ''
   });
 
   const [items, setItems] = useState([
@@ -50,6 +61,34 @@ export default function CreateInvoice() {
       showNotification("Please enter a client name.", "error");
       return;
     }
+    
+    // Save to localStorage so it appears in Invoice History
+    const existingInvoices = JSON.parse(localStorage.getItem('invoicesData') || '[]');
+    const newId = invoice.invoiceNumber || `INV-2026-${String(existingInvoices.length + 1).padStart(3, '0')}`;
+    
+    const newInvoice = {
+      id: newId,
+      clientId: invoice.clientId,
+      client: invoice.client,
+      contactPerson: invoice.contactPerson,
+      email: invoice.email,
+      phone: invoice.phone,
+      gstNumber: invoice.gstNumber,
+      panNumber: invoice.panNumber,
+      address: invoice.address,
+      date: invoice.date,
+      dueDate: invoice.dueDate,
+      poNumber: invoice.poNumber,
+      paymentTerms: invoice.paymentTerms,
+      bankDetails: invoice.bankDetails,
+      items: items,
+      baseTotal: baseTotal,
+      gstAmount: gstAmount,
+      total: finalTotal,
+      status: 'Unpaid' // Default status
+    };
+    
+    localStorage.setItem('invoicesData', JSON.stringify([newInvoice, ...existingInvoices]));
     
     showNotification("Invoice saved successfully!", "success");
   };
@@ -92,16 +131,93 @@ export default function CreateInvoice() {
         {/* Left Column - Details */}
         <div className="lg:col-span-2 space-y-6">
           <div className="glass-card p-6">
-            <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Invoice Details</h2>
+            <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Client Details</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="sm:col-span-2">
-                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Client Name / Company</label>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Client ID</label>
                 <input 
                   type="text" 
                   className="input-field" 
-                  placeholder="e.g. Acme Corp" 
+                  value={invoice.clientId} 
+                  onChange={(e) => setInvoice({ ...invoice, clientId: e.target.value })} 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Company Name</label>
+                <input 
+                  type="text" 
+                  className="input-field" 
                   value={invoice.client} 
                   onChange={(e) => setInvoice({ ...invoice, client: e.target.value })} 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Contact Person</label>
+                <input 
+                  type="text" 
+                  className="input-field" 
+                  value={invoice.contactPerson} 
+                  onChange={(e) => setInvoice({ ...invoice, contactPerson: e.target.value })} 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
+                <input 
+                  type="email" 
+                  className="input-field" 
+                  value={invoice.email} 
+                  onChange={(e) => setInvoice({ ...invoice, email: e.target.value })} 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Phone</label>
+                <input 
+                  type="text" 
+                  className="input-field" 
+                  value={invoice.phone} 
+                  onChange={(e) => setInvoice({ ...invoice, phone: e.target.value })} 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">GST Number</label>
+                <input 
+                  type="text" 
+                  className="input-field" 
+                  value={invoice.gstNumber} 
+                  onChange={(e) => setInvoice({ ...invoice, gstNumber: e.target.value })} 
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">PAN Number</label>
+                <input 
+                  type="text" 
+                  className="input-field" 
+                  value={invoice.panNumber} 
+                  onChange={(e) => setInvoice({ ...invoice, panNumber: e.target.value })} 
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Address</label>
+                <textarea 
+                  className="input-field resize-none h-20" 
+                  value={invoice.address} 
+                  onChange={(e) => setInvoice({ ...invoice, address: e.target.value })} 
+                ></textarea>
+              </div>
+            </div>
+          </div>
+
+          <div className="glass-card p-6">
+            <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Invoice Details</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Invoice Number</label>
+                <input 
+                  type="text" 
+                  className="input-field" 
+                  value={invoice.invoiceNumber} 
+                  onChange={(e) => setInvoice({ ...invoice, invoiceNumber: e.target.value })}
+                  placeholder="Leave blank to auto-generate (e.g. INV-2026-001)" 
                 />
               </div>
               <div>
@@ -120,6 +236,15 @@ export default function CreateInvoice() {
                   className="input-field text-slate-500" 
                   value={invoice.dueDate} 
                   onChange={(e) => setInvoice({ ...invoice, dueDate: e.target.value })} 
+                />
+              </div>
+              <div className="sm:col-span-2">
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Purchase Order (PO) Number</label>
+                <input 
+                  type="text" 
+                  className="input-field" 
+                  value={invoice.poNumber} 
+                  onChange={(e) => setInvoice({ ...invoice, poNumber: e.target.value })} 
                 />
               </div>
             </div>
@@ -142,7 +267,7 @@ export default function CreateInvoice() {
                   {items.map((item) => (
                     <tr key={item.id}>
                       <td className="py-3 pr-2">
-                        <input type="text" className="input-field py-2" placeholder="Item description" value={item.description} onChange={(e) => handleItemChange(item.id, 'description', e.target.value)} />
+                        <input type="text" className="input-field py-2" value={item.description} onChange={(e) => handleItemChange(item.id, 'description', e.target.value)} />
                       </td>
                       <td className="py-3 px-2">
                         <input type="number" min="1" className="input-field py-2" value={item.quantity} onChange={(e) => handleItemChange(item.id, 'quantity', e.target.value)} />
@@ -181,9 +306,8 @@ export default function CreateInvoice() {
                 className="input-field" 
                 value={invoice.gstRate} 
                 onChange={(e) => setInvoice({ ...invoice, gstRate: e.target.value })}
-                placeholder="e.g. 18"
                 min="0"
-                step="0.01"
+                step="1"
               />
             </div>
 
@@ -204,10 +328,33 @@ export default function CreateInvoice() {
           </div>
           
           <div className="glass-card p-6">
+            <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Payment Information</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Payment Terms</label>
+                <input 
+                  type="text"
+                  className="input-field w-full"
+                  placeholder="e.g. Net 30"
+                  value={invoice.paymentTerms}
+                  onChange={(e) => setInvoice({ ...invoice, paymentTerms: e.target.value })}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Bank Account / Payment Details</label>
+                <textarea 
+                  className="input-field resize-none h-20" 
+                  value={invoice.bankDetails} 
+                  onChange={(e) => setInvoice({ ...invoice, bankDetails: e.target.value })}
+                ></textarea>
+              </div>
+            </div>
+          </div>
+          
+          <div className="glass-card p-6">
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Additional Notes</label>
             <textarea 
               className="input-field resize-none h-24" 
-              placeholder="Thank you for your business..." 
               value={invoice.note} 
               onChange={(e) => setInvoice({ ...invoice, note: e.target.value })}
             ></textarea>

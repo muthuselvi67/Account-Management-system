@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Search, Plus, MoreVertical, Edit2, Trash2, FileText, Download, RefreshCw, UserX, UserCheck, User, Mail, Building, Briefcase, Shield, Calendar, DollarSign, Phone, Check, X } from 'lucide-react';
 
-export default function Students() {
+export default function Employees() {
   const [searchTerm, setSearchTerm] = useState('');
   const [departmentFilter, setDepartmentFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -465,23 +465,7 @@ Status       : ${emp.status}
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
-                    <Calendar size={16} className="text-violet-500" />
-                    Joining Date
-                  </label>
-                  <input type="date" className="w-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-dark-700 rounded-lg px-4 py-2.5 text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all [&::-webkit-calendar-picker-indicator]:dark:invert" value={newEmployee.joined} onChange={(e) => setNewEmployee({ ...newEmployee, joined: e.target.value })} />
-                </div>
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
-                    <DollarSign size={16} className="text-violet-500" />
-                    Salary (₹)
-                  </label>
-                  <input type="text" className="w-full bg-white dark:bg-zinc-900 border border-slate-200 dark:border-dark-700 rounded-lg px-4 py-2.5 text-sm font-medium text-slate-900 dark:text-white focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-all" value={newEmployee.salary} onChange={(e) => setNewEmployee({ ...newEmployee, salary: e.target.value })} />
-                </div>
-              </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6">
                 <div className="space-y-2">
                   <label className="flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-300">
                     <UserCheck size={16} className="text-violet-500" />

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { useNavigate } from 'react-router-dom';
 import { FileText, X, Search, Download, Printer, CheckCircle2, Clock, AlertCircle, IndianRupee } from 'lucide-react';
 
 const INITIAL = [
@@ -10,6 +11,7 @@ const INITIAL = [
 ];
 
 export default function Invoices() {
+  const navigate = useNavigate();
   const [invoices, setInvoices] = useState(() => {
     const saved = localStorage.getItem('invoicesData');
     return saved ? JSON.parse(saved) : INITIAL;
@@ -110,13 +112,12 @@ export default function Invoices() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">GST Rate (%)</label>
-                <select className="input-field py-2" value={newInv.gstRate} onChange={(e) => setNewInv({ ...newInv, gstRate: e.target.value })}>
-                  <option value="0">0% (Exempt)</option>
-                  <option value="5">5%</option>
-                  <option value="12">12%</option>
-                  <option value="18">18%</option>
-                  <option value="28">28%</option>
-                </select>
+                <input 
+                  type="number" 
+                  className="input-field" 
+                  value={newInv.gstRate} 
+                  onChange={(e) => setNewInv({ ...newInv, gstRate: e.target.value })} 
+                />
               </div>
             </div>
             {newInv.base && (
@@ -170,8 +171,8 @@ export default function Invoices() {
           <button onClick={handleExport} className="btn-secondary flex items-center gap-2 text-sm">
             <Download size={16} /> Export
           </button>
-          <button onClick={() => setIsModalOpen(true)} className="btn-primary flex items-center gap-2">
-            <span className="text-lg leading-none">+</span> New Invoice
+          <button onClick={() => navigate('/create-invoice')} className="btn-primary flex items-center gap-2">
+            <span className="text-lg leading-none">+</span> Create Invoice
           </button>
         </div>
       </div>

@@ -5,7 +5,7 @@ import Topbar from './Topbar';
 import SettingsModal from './SettingsModal';
 
 export default function Layout() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 1024);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(window.innerWidth >= 768);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isDark, setIsDark] = useState(() => {
     const saved = localStorage.getItem('theme');
@@ -28,6 +28,7 @@ export default function Layout() {
         isOpen={isSidebarOpen} 
         toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} 
         openSettings={() => setIsSettingsOpen(true)}
+        isSettingsOpen={isSettingsOpen}
       />
 
       <div className="flex-1 flex flex-col h-screen overflow-hidden">

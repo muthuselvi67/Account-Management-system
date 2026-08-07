@@ -48,6 +48,18 @@ CREATE TABLE IF NOT EXISTS transactions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 5. Running Costs Table
+CREATE TABLE IF NOT EXISTS running_costs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    rc_id VARCHAR(50) NOT NULL UNIQUE,
+    category VARCHAR(100) NOT NULL,
+    amount DECIMAL(10, 2) NOT NULL,
+    frequency VARCHAR(50) NOT NULL,
+    date DATE NOT NULL,
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Insert dummy data for Dashboard
 INSERT INTO users (name, email, password, role) VALUES 
 ('Admin User', 'admin@learnlike.in', 'hashed_password', 'admin');

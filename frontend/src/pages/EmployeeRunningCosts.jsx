@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Users2, X } from 'lucide-react';
+import { Users2, X, Trash2, Edit2 } from 'lucide-react';
 
 export default function EmployeeRunningCosts() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [records, setRecords] = useState(() => {
     const saved = localStorage.getItem('employeeRunningCosts');
     return saved ? JSON.parse(saved) : [];
@@ -15,15 +17,34 @@ export default function EmployeeRunningCosts() {
   }, [records]);
 
   const handleSubmit = () => {
-    if (!newRecord.name || !newRecord.amount) return;
-    const record = {
-      ...newRecord,
-      id: `ERC-${Math.floor(1000 + Math.random() * 9000)}`,
-      addedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
-    };
-    setRecords([record, ...records]);
+    if (editingId) {
+      setRecords(records.map(r => r.id === editingId ? { ...r, ...newRecord } : r));
+    } else {
+      const record = {
+        ...newRecord,
+        id: `ERC-${Math.floor(1000 + Math.random() * 9000)}`,
+        addedAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+      };
+      setRecords([record, ...records]);
+    }
     setIsModalOpen(false);
+    setEditingId(null);
     setNewRecord({ name: '', amount: '', date: '', description: '' });
+  };
+
+  const handleEdit = (r) => {
+    setNewRecord({ name: r.name, amount: r.amount, date: r.date, description: r.description });
+    setEditingId(r.id);
+    setIsModalOpen(true);
+  };
+
+  const handleDelete = (id) => setDeleteConfirmId(id);
+
+  const confirmDelete = () => {
+    if (deleteConfirmId) {
+      setRecords(records.filter(r => r.id !== deleteConfirmId));
+      setDeleteConfirmId(null);
+    }
   };
 
   const modal = (
@@ -32,8 +53,8 @@ export default function EmployeeRunningCosts() {
       <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 9999, width: 'min(28rem, calc(100vw - 2rem))' }}>
         <div className="bg-white dark:bg-dark-900 rounded-2xl shadow-2xl w-full overflow-hidden max-h-[90vh] flex flex-col">
           <div className="p-5 border-b border-slate-100 dark:border-dark-800 flex justify-between items-center">
-            <h2 className="text-lg font-bold text-slate-800 dark:text-white">Add Employee Running Cost</h2>
-            <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-600"><X size={20} /></button>
+            <h2 className="text-lg font-bold text-slate-800 dark:text-white">{editingId ? 'Edit Employee Running Cost' : 'Add Employee Running Cost'}</h2>
+            <button onClick={() => { setIsModalOpen(false); setEditingId(null); }} className="text-slate-400 hover:text-slate-600"><X size={20} /></button>
           </div>
           <div className="p-6 space-y-4 overflow-y-auto">
             <div>
@@ -71,7 +92,11 @@ export default function EmployeeRunningCosts() {
           </h1>
           <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">Track all recurring costs related to employees.</p>
         </div>
-        <button onClick={() => setIsModalOpen(true)} className="btn-primary flex items-center gap-2">
+        <button onClick={() => {
+          setEditingId(null);
+          setNewRecord({ name: '', amount: '', date: '', description: '' });
+          setIsModalOpen(true);
+        }} className="btn-primary flex items-center gap-2">
           <span className="text-lg leading-none">+</span> Add Cost
         </button>
       </div>
@@ -95,6 +120,7 @@ export default function EmployeeRunningCosts() {
                   <th className="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Amount</th>
                   <th className="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Date</th>
                   <th className="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Description</th>
+                  <th className="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-dark-800">
@@ -105,6 +131,14 @@ export default function EmployeeRunningCosts() {
                     <td className="p-4 font-semibold text-slate-900 dark:text-white">₹{r.amount}</td>
                     <td className="p-4 text-sm text-slate-600 dark:text-slate-400">{r.date}</td>
                     <td className="p-4 text-sm text-slate-600 dark:text-slate-400 truncate max-w-[180px]" title={r.description}>{r.description}</td>
+                    <td className="p-4 text-right">
+                      <button onClick={() => handleEdit(r)} className="p-2 text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 rounded-lg transition-colors inline-flex mr-1" title="Edit">
+                        <Edit2 size={16} />
+                      </button>
+                      <button onClick={() => handleDelete(r.id)} className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors inline-flex" title="Delete">
+                        <Trash2 size={16} />
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -113,6 +147,22 @@ export default function EmployeeRunningCosts() {
         </div>
       )}
       {isModalOpen && createPortal(modal, document.body)}
+      {deleteConfirmId && createPortal(
+        <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-fade-in">
+          <div className="bg-white dark:bg-dark-900 rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center">
+            <div className="w-16 h-16 bg-violet-100 dark:bg-violet-900/30 rounded-full flex items-center justify-center mx-auto mb-4 text-violet-600 dark:text-violet-400">
+              <Trash2 size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2">Delete Record?</h3>
+            <p className="text-slate-500 dark:text-slate-400 mb-6">Are you sure you want to delete this employee cost record? This action cannot be undone.</p>
+            <div className="flex gap-3">
+              <button onClick={() => setDeleteConfirmId(null)} className="flex-1 btn-secondary py-2.5">Cancel</button>
+              <button onClick={confirmDelete} className="flex-1 btn-primary bg-violet-600 hover:bg-violet-700 py-2.5 border-0">Yes, Delete</button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }

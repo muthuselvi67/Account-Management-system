@@ -2,15 +2,19 @@ import React, { useState } from 'react';
 import { Building2, Save, MapPin, Mail, Phone, Hash, CheckCircle2 } from 'lucide-react';
 
 export default function CompanyProfile() {
-  const [profile, setProfile] = useState({
-    name: 'Learnlike Inc.',
-    registration: 'LNK-99238',
-    email: 'contact@learnlike.com',
-    phone: '+91 98765 43210',
-    address: '123 Tech Park, Phase 1',
-    city: 'Bangalore',
-    state: 'Karnataka',
-    zip: '560001'
+  const [profile, setProfile] = useState(() => {
+    const saved = localStorage.getItem('learnlike_company_profile');
+    if (saved) return JSON.parse(saved);
+    return {
+      name: '',
+      registration: '',
+      email: '',
+      phone: '',
+      address: '',
+      city: '',
+      state: '',
+      zip: ''
+    };
   });
   const [toast, setToast] = useState({ show: false, message: '' });
 
@@ -22,6 +26,7 @@ export default function CompanyProfile() {
   };
 
   const handleSave = () => {
+    localStorage.setItem('learnlike_company_profile', JSON.stringify(profile));
     showNotification("Company Profile saved successfully!");
   };
 
