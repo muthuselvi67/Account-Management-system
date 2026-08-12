@@ -163,9 +163,9 @@ export default function InvoiceHistory() {
       doc.text(descLines, 142, cy + 6, { align: "right" });
 
       const itemPrice = Number(item.price || 0) * Number(item.quantity || 1);
-      const itemGst = itemPrice * 0.09; 
+      const itemGst = itemPrice * 0.09;
       baseTotal += itemPrice;
-      totalGstAmount += itemGst * 2; 
+      totalGstAmount += itemGst * 2;
 
       doc.text("Rs. " + itemPrice.toLocaleString('en-IN', { minimumFractionDigits: 0 }), 170, cy + 6, { align: "center" });
 

@@ -88,9 +88,9 @@ const fc = (n) => '₹ ' + Number(n).toLocaleString('en-IN', { minimumFractionDi
 
 /* ── Number to words ── */
 function numToWords(num) {
-  const a = ['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten',
-    'Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
-  const b = ['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+  const a = ['', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten',
+    'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
+  const b = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
   if (!num) return 'Zero';
   const n = ('000000000' + num).substr(-9).match(/^(\d{2})(\d{2})(\d{2})(\d{1})(\d{2})$/);
   if (!n) return '';
@@ -158,8 +158,8 @@ export default function PaySlipModal({ salary, onClose }) {
 
   const update = (key) => (val) => setSlip(prev => ({ ...prev, [key]: val }));
 
-  const totalEarnings = ['basic','hra','conveyance','otherAllowances','medicalAllow','leaveReimb'].reduce((s,k) => s + pn(slip[k]), 0);
-  const totalDeductions = ['leaveDeductions','advanceDeductions','otherDeductions','incomeTax','professionTax','deductions'].reduce((s,k) => s + pn(slip[k]), 0);
+  const totalEarnings = ['basic', 'hra', 'conveyance', 'otherAllowances', 'medicalAllow', 'leaveReimb'].reduce((s, k) => s + pn(slip[k]), 0);
+  const totalDeductions = ['leaveDeductions', 'advanceDeductions', 'otherDeductions', 'incomeTax', 'professionTax', 'deductions'].reduce((s, k) => s + pn(slip[k]), 0);
   const netPay = totalEarnings - totalDeductions;
 
   /* ── PDF Export ── */
@@ -172,11 +172,11 @@ export default function PaySlipModal({ salary, onClose }) {
       doc.setTextColor(col[0], col[1], col[2]); doc.text(String(t), x, y, { align });
     };
     const fmtC = (v) => 'Rs. ' + Number(pn(v)).toLocaleString('en-IN', { minimumFractionDigits: 2 });
-    try { doc.addImage(LOGO_BASE64, 'PNG', 14, 10, 40, 12); } catch(e) {}
+    try { doc.addImage(LOGO_BASE64, 'PNG', 14, 10, 40, 12); } catch (e) { }
     addText('Pay-slip', 105, 20, 18, true, 'center', dark);
     doc.setDrawColor(purple[0], purple[1], purple[2]); doc.setLineWidth(0.5); doc.line(14, 26, 196, 26);
     let y = 34;
-    
+
     // Adjusted coordinates for better spacing in PDF
     const lx = 14, lv = 38, mx = 80, mv = 108, rx = 148;
     addText('Employee:', lx, y, 8.5, true, 'left', navy); addText(slip.employee, lv, y, 8.5, false, 'left', dark);
@@ -239,14 +239,14 @@ export default function PaySlipModal({ salary, onClose }) {
     y += 18;
     addText('Employee Signature:', 14, y, 8.5, true, 'left', [100, 116, 139]);
     addText('Approved:', 100, y, 8.5, true, 'left', [100, 116, 139]);
-    
+
     // Signature placeholder graphic (cursive text)
     doc.setFont('times', 'italic');
     doc.setFontSize(14);
     doc.setTextColor(148, 163, 184); // slate-400
     doc.text('Signature', 130, y);
     doc.setFont('helvetica', 'normal'); // reset font
-    
+
     y += 6;
     doc.setDrawColor(203, 213, 225); doc.setLineWidth(0.3);
     doc.line(14, y, 90, y);
@@ -254,7 +254,7 @@ export default function PaySlipModal({ salary, onClose }) {
     y += 4.5;
     addText('Date: ', 14, y, 8, false, 'left', [100, 116, 139]);
     if (slip.sigDate) addText(slip.sigDate, 24, y, 8, false, 'left', [100, 116, 139]);
-    
+
     addText('Date: ', 100, y, 8, false, 'left', [100, 116, 139]);
     if (slip.approvedDate) addText(slip.approvedDate, 110, y, 8, false, 'left', [100, 116, 139]);
 
@@ -329,8 +329,8 @@ export default function PaySlipModal({ salary, onClose }) {
                 border: '1.5px solid #6d28d9', borderRadius: 10,
                 padding: '8px 18px', fontWeight: 700, fontSize: '0.82rem', cursor: 'pointer',
               }}
-                onMouseEnter={e => e.currentTarget.style.background='#faf5ff'}
-                onMouseLeave={e => e.currentTarget.style.background='#fff'}
+                onMouseEnter={e => e.currentTarget.style.background = '#faf5ff'}
+                onMouseLeave={e => e.currentTarget.style.background = '#fff'}
               >
                 <Download size={15} /> Download PDF
               </button>
@@ -339,8 +339,8 @@ export default function PaySlipModal({ salary, onClose }) {
                 padding: '8px 10px', cursor: 'pointer', color: '#64748b',
                 display: 'flex', alignItems: 'center',
               }}
-                onMouseEnter={e => e.currentTarget.style.background='#e2e8f0'}
-                onMouseLeave={e => e.currentTarget.style.background='#f1f5f9'}
+                onMouseEnter={e => e.currentTarget.style.background = '#e2e8f0'}
+                onMouseLeave={e => e.currentTarget.style.background = '#f1f5f9'}
               >
                 <X size={18} />
               </button>
@@ -358,9 +358,9 @@ export default function PaySlipModal({ salary, onClose }) {
         <div style={{ padding: '20px 20px 28px' }}>
 
           {/* "Click any field to edit" hint */}
-          <div style={{ display:'flex', alignItems:'center', justifyContent:'center', gap:5, marginBottom:14 }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 5, marginBottom: 14 }}>
             <Edit3 size={11} color="#a78bfa" />
-            <span style={{ fontSize:'0.68rem', color:'#a78bfa', fontWeight:600 }}>Click any field to edit</span>
+            <span style={{ fontSize: '0.68rem', color: '#a78bfa', fontWeight: 600 }}>Click any field to edit</span>
           </div>
 
           {/* ── EMPLOYEE INFO GRID ── */}
@@ -450,7 +450,7 @@ export default function PaySlipModal({ salary, onClose }) {
               borderRadius: 14, padding: '16px 18px',
               display: 'flex', alignItems: 'center', gap: 14,
             }}>
-              <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#d1fae5', display:'flex', alignItems:'center', justifyContent:'center', flexShrink: 0 }}>
+              <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#d1fae5', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <Wallet size={20} color="#059669" />
               </div>
               <div>
@@ -466,7 +466,7 @@ export default function PaySlipModal({ salary, onClose }) {
               borderRadius: 14, padding: '16px 18px',
               display: 'flex', alignItems: 'center', gap: 14,
             }}>
-              <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#fee2e2', display:'flex', alignItems:'center', justifyContent:'center', flexShrink: 0 }}>
+              <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#fee2e2', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <ShieldAlert size={20} color="#e11d48" />
               </div>
               <div>
@@ -482,7 +482,7 @@ export default function PaySlipModal({ salary, onClose }) {
               borderRadius: 14, padding: '16px 18px',
               display: 'flex', alignItems: 'center', gap: 14,
             }}>
-              <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#ede9fe', display:'flex', alignItems:'center', justifyContent:'center', flexShrink: 0 }}>
+              <div style={{ width: 42, height: 42, borderRadius: '50%', background: '#ede9fe', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <Wallet size={20} color="#7c3aed" />
               </div>
               <div>
@@ -509,7 +509,7 @@ export default function PaySlipModal({ salary, onClose }) {
                 Date: <EC value={slip.sigDate} onChange={update('sigDate')} size="0.82rem" color="#64748b" />
               </div>
             </div>
-            
+
             {/* Approved */}
             <div style={{ flex: 1 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginBottom: 4 }}>
@@ -517,8 +517,8 @@ export default function PaySlipModal({ salary, onClose }) {
                   Approved:
                 </div>
                 {/* Signature Graphic Placeholder */}
-                <div style={{ 
-                  color: '#94a3b8', fontSize: '1.2rem', fontFamily: 'cursive', 
+                <div style={{
+                  color: '#94a3b8', fontSize: '1.2rem', fontFamily: 'cursive',
                   transform: 'rotate(-8deg)', userSelect: 'none',
                 }}>
                   Signature
@@ -538,7 +538,7 @@ export default function PaySlipModal({ salary, onClose }) {
             padding: '14px 20px',
           }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#7c3aed', display:'flex', alignItems:'center', justifyContent:'center', flexShrink: 0 }}>
+              <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#7c3aed', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <Star size={18} color="#fff" fill="#fff" />
               </div>
               <div>
@@ -550,7 +550,7 @@ export default function PaySlipModal({ salary, onClose }) {
             </div>
             <div style={{ width: 1, height: 40, background: '#e5e7eb' }} />
             <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-              <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#ede9fe', display:'flex', alignItems:'center', justifyContent:'center', flexShrink: 0 }}>
+              <div style={{ width: 38, height: 38, borderRadius: '50%', background: '#ede9fe', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                 <Calendar size={18} color="#7c3aed" />
               </div>
               <div>

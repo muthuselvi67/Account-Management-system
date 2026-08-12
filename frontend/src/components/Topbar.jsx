@@ -9,12 +9,42 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
   const [isSavingProfile, setIsSavingProfile] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [profileData, setProfileData] = useState({
-    email: 'admin@example.com',
-    employeeId: 'EMP-0087',
-    department: 'Administration',
-    position: 'Chief Executive Officer'
+    email: '',
+    employeeId: '',
+    department: '',
+    position: '',
+    avatar: ''
   });
   const [editingData, setEditingData] = useState(profileData);
+  const [isFetchingProfile, setIsFetchingProfile] = useState(false);
+  
+  const handleAvatarChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setEditingData(prev => ({ ...prev, avatar: reader.result }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  useEffect(() => {
+    if (showProfileModal) {
+      setIsFetchingProfile(true);
+      fetch('http://localhost/LEARNLIKE/account management system/backend/api/users/profile.php')
+        .then(res => res.json())
+        .then(data => {
+          if (!data.message) {
+            setProfileData(data);
+            setEditingData(data);
+          }
+        })
+        .catch(console.error)
+        .finally(() => setIsFetchingProfile(false));
+    }
+  }, [showProfileModal]);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -132,8 +162,12 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className="flex items-center gap-3 focus:outline-none"
               >
-                <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-dark-800 flex items-center justify-center text-slate-500 flex-shrink-0">
-                  <User size={20} />
+                <div className="w-10 h-10 rounded-full bg-slate-100 dark:bg-dark-800 flex items-center justify-center text-slate-500 flex-shrink-0 overflow-hidden">
+                  {profileData.avatar ? (
+                    <img src={profileData.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                  ) : (
+                    <User size={20} />
+                  )}
                 </div>
                 <div className="hidden md:block text-left">
                   <p className="text-sm font-bold text-slate-800 dark:text-white leading-tight uppercase">
@@ -146,8 +180,12 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
               {isProfileOpen && (
                 <div className="absolute right-0 top-full mt-3 w-64 bg-white dark:bg-zinc-950 rounded-2xl shadow-xl shadow-slate-200/50 dark:shadow-black/50 border border-slate-100 dark:border-dark-700 overflow-hidden animate-fade-in z-50">
                   <div className="p-5 flex items-center gap-3 border-b border-slate-100 dark:border-dark-800">
-                    <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-dark-800 flex items-center justify-center text-slate-500 flex-shrink-0">
-                      <User size={24} />
+                    <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-dark-800 flex items-center justify-center text-slate-500 flex-shrink-0 overflow-hidden">
+                      {profileData.avatar ? (
+                        <img src={profileData.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                      ) : (
+                        <User size={24} />
+                      )}
                     </div>
                     <div>
                       <p className="text-sm font-bold text-slate-800 dark:text-white uppercase leading-tight">
@@ -216,65 +254,104 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
 
       {/* Profile Modal Overlay */}
       {showProfileModal && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-fade-in">
-          <div className="bg-white dark:bg-zinc-950 rounded-3xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col">
-            <div className="p-6 flex items-center justify-between border-b border-slate-100 dark:border-dark-800">
-              <h2 className="text-xl font-bold text-slate-800 dark:text-white">My Profile</h2>
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-in fade-in duration-300">
+          <div className="bg-white dark:bg-zinc-950 rounded-[2rem] shadow-2xl w-full max-w-xl overflow-hidden flex flex-col border border-white/20 dark:border-white/5 transform transition-all animate-in zoom-in-95 duration-300">
+            {/* Header with gradient */}
+            <div className="relative h-32 bg-gradient-to-r from-violet-500 to-fuchsia-500">
               <button
                 onClick={() => setShowProfileModal(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors"
+                className="absolute top-4 right-4 p-2 bg-black/10 hover:bg-black/20 text-white rounded-full transition-colors"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <div className="p-8 flex flex-col items-center">
-              <div className="relative mb-4">
-                <div className="w-24 h-24 rounded-full shadow-md bg-slate-100 dark:bg-dark-800 border-[3px] border-white dark:border-zinc-950 flex items-center justify-center text-slate-400">
-                  <User size={48} />
+            <div className="px-8 pb-8 pt-0 flex flex-col items-center relative">
+              {/* Avatar overlapping header */}
+              <div className="relative -mt-16 mb-4 group">
+                <div className="w-32 h-32 rounded-full shadow-xl bg-white dark:bg-zinc-900 border-4 border-white dark:border-zinc-950 flex items-center justify-center text-violet-500 overflow-hidden relative">
+                  {(isEditingProfile ? editingData.avatar : profileData.avatar) ? (
+                    <img 
+                      src={isEditingProfile ? editingData.avatar : profileData.avatar} 
+                      alt="Profile Avatar" 
+                      className={`w-full h-full object-cover transition-all ${isEditingProfile ? 'group-hover:brightness-75' : ''}`} 
+                    />
+                  ) : (
+                    <User size={64} className={`opacity-80 transition-all ${isEditingProfile ? 'group-hover:opacity-40' : ''}`} />
+                  )}
+                  
+                  {isEditingProfile && (
+                    <label className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 cursor-pointer transition-opacity">
+                      <Upload size={24} className="mb-1" />
+                      <span className="text-[10px] font-bold uppercase tracking-wider">Upload</span>
+                      <input type="file" accept="image/*" className="hidden" onChange={handleAvatarChange} />
+                    </label>
+                  )}
                 </div>
               </div>
-              <h3 className="text-xl font-bold text-slate-900 dark:text-white uppercase tracking-wide">
+              
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white uppercase tracking-wide">
                 Admin
               </h3>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400 mt-1 mb-8">
+                {profileData.position || 'Chief Executive Officer'}
+              </p>
 
-              <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-4 mt-8 text-left">
-                <div className="bg-slate-50 dark:bg-dark-800/50 p-4 rounded-xl border border-slate-100 dark:border-dark-700/50">
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Email Address</p>
-                  {isEditingProfile ? (
-                    <input type="email" value={editingData.email} onChange={(e) => setEditingData({ ...editingData, email: e.target.value })} className="w-full bg-white dark:bg-zinc-950 border border-slate-200 dark:border-dark-700 rounded-lg px-3 py-1.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500 transition-shadow" />
-                  ) : (
-                    <p className="text-sm font-semibold text-slate-800 dark:text-white truncate">{profileData.email}</p>
-                  )}
+              {isFetchingProfile ? (
+                <div className="flex flex-col items-center justify-center py-8">
+                  <Loader2 size={32} className="animate-spin text-violet-500 mb-4" />
+                  <p className="text-sm text-slate-500">Loading profile...</p>
                 </div>
-                <div className="bg-slate-50 dark:bg-dark-800/50 p-4 rounded-xl border border-slate-100 dark:border-dark-700/50">
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Employee ID</p>
-                  {isEditingProfile ? (
-                    <input type="text" value={editingData.employeeId} onChange={(e) => setEditingData({ ...editingData, employeeId: e.target.value })} className="w-full bg-white dark:bg-zinc-950 border border-slate-200 dark:border-dark-700 rounded-lg px-3 py-1.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500 transition-shadow" />
-                  ) : (
-                    <p className="text-sm font-semibold text-slate-800 dark:text-white">{profileData.employeeId}</p>
-                  )}
+              ) : (
+                <div className="w-full grid grid-cols-1 sm:grid-cols-2 gap-5 text-left">
+                  <div className="group bg-slate-50 hover:bg-slate-100 dark:bg-zinc-900/50 dark:hover:bg-zinc-900 p-5 rounded-2xl border border-slate-100 dark:border-white/5 transition-colors">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                      <User size={12} /> Email Address
+                    </p>
+                    {isEditingProfile ? (
+                      <input type="email" value={editingData.email} onChange={(e) => setEditingData({ ...editingData, email: e.target.value })} className="w-full bg-white dark:bg-zinc-950 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-shadow" />
+                    ) : (
+                      <p className="text-sm font-semibold text-slate-800 dark:text-white truncate">{profileData.email}</p>
+                    )}
+                  </div>
+                  
+                  <div className="group bg-slate-50 hover:bg-slate-100 dark:bg-zinc-900/50 dark:hover:bg-zinc-900 p-5 rounded-2xl border border-slate-100 dark:border-white/5 transition-colors">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                      <Settings size={12} /> Employee ID
+                    </p>
+                    {isEditingProfile ? (
+                      <input type="text" value={editingData.employeeId} onChange={(e) => setEditingData({ ...editingData, employeeId: e.target.value })} className="w-full bg-white dark:bg-zinc-950 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-shadow" />
+                    ) : (
+                      <p className="text-sm font-semibold text-slate-800 dark:text-white">{profileData.employeeId}</p>
+                    )}
+                  </div>
+                  
+                  <div className="group bg-slate-50 hover:bg-slate-100 dark:bg-zinc-900/50 dark:hover:bg-zinc-900 p-5 rounded-2xl border border-slate-100 dark:border-white/5 transition-colors">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                      <Lock size={12} /> Department
+                    </p>
+                    {isEditingProfile ? (
+                      <input type="text" value={editingData.department} onChange={(e) => setEditingData({ ...editingData, department: e.target.value })} className="w-full bg-white dark:bg-zinc-950 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-shadow" />
+                    ) : (
+                      <p className="text-sm font-semibold text-slate-800 dark:text-white">{profileData.department}</p>
+                    )}
+                  </div>
+                  
+                  <div className="group bg-slate-50 hover:bg-slate-100 dark:bg-zinc-900/50 dark:hover:bg-zinc-900 p-5 rounded-2xl border border-slate-100 dark:border-white/5 transition-colors">
+                    <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
+                      <Upload size={12} /> Position
+                    </p>
+                    {isEditingProfile ? (
+                      <input type="text" value={editingData.position} onChange={(e) => setEditingData({ ...editingData, position: e.target.value })} className="w-full bg-white dark:bg-zinc-950 border border-slate-200 dark:border-white/10 rounded-xl px-4 py-2 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500/50 transition-shadow" />
+                    ) : (
+                      <p className="text-sm font-semibold text-slate-800 dark:text-white">{profileData.position}</p>
+                    )}
+                  </div>
                 </div>
-                <div className="bg-slate-50 dark:bg-dark-800/50 p-4 rounded-xl border border-slate-100 dark:border-dark-700/50">
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Department</p>
-                  {isEditingProfile ? (
-                    <input type="text" value={editingData.department} onChange={(e) => setEditingData({ ...editingData, department: e.target.value })} className="w-full bg-white dark:bg-zinc-950 border border-slate-200 dark:border-dark-700 rounded-lg px-3 py-1.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500 transition-shadow" />
-                  ) : (
-                    <p className="text-sm font-semibold text-slate-800 dark:text-white">{profileData.department}</p>
-                  )}
-                </div>
-                <div className="bg-slate-50 dark:bg-dark-800/50 p-4 rounded-xl border border-slate-100 dark:border-dark-700/50">
-                  <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">Position</p>
-                  {isEditingProfile ? (
-                    <input type="text" value={editingData.position} onChange={(e) => setEditingData({ ...editingData, position: e.target.value })} className="w-full bg-white dark:bg-zinc-950 border border-slate-200 dark:border-dark-700 rounded-lg px-3 py-1.5 text-sm text-slate-800 dark:text-white focus:outline-none focus:ring-2 focus:ring-violet-500 transition-shadow" />
-                  ) : (
-                    <p className="text-sm font-semibold text-slate-800 dark:text-white">{profileData.position}</p>
-                  )}
-                </div>
-              </div>
+              )}
             </div>
 
-            <div className="px-8 py-5 bg-slate-50 dark:bg-dark-800/30 flex justify-end gap-3">
+            <div className="px-8 py-5 bg-slate-50/80 dark:bg-zinc-900/80 backdrop-blur-sm border-t border-slate-100 dark:border-white/5 flex justify-end gap-3 rounded-b-[2rem]">
               {isEditingProfile ? (
                 <>
                   <button
@@ -283,24 +360,30 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
                       setEditingData(profileData);
                     }}
                     disabled={isSavingProfile}
-                    className="px-6 py-2.5 rounded-xl font-semibold transition-colors text-slate-600 hover:bg-slate-200 dark:text-slate-300 dark:hover:bg-dark-700"
+                    className="px-6 py-2.5 rounded-xl font-semibold transition-colors text-slate-600 hover:bg-slate-200 dark:text-slate-300 dark:hover:bg-zinc-800"
                   >
                     Cancel
                   </button>
-                    <button
-                      onClick={() => {
-                        setIsSavingProfile(true);
-                        setTimeout(() => {
-                          setProfileData(editingData);
-                          if (customAvatar) {
-                            localStorage.setItem(`avatar_${userRole}`, customAvatar);
-                          }
-                          setIsSavingProfile(false);
-                          setIsEditingProfile(false);
-                        }, 1000);
-                      }}
+                  <button
+                    onClick={() => {
+                      setIsSavingProfile(true);
+                      fetch('http://localhost/LEARNLIKE/account management system/backend/api/users/profile.php', {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(editingData)
+                      })
+                      .then(() => {
+                        setProfileData(editingData);
+                        setIsSavingProfile(false);
+                        setIsEditingProfile(false);
+                      })
+                      .catch(err => {
+                        console.error(err);
+                        setIsSavingProfile(false);
+                      });
+                    }}
                     disabled={isSavingProfile}
-                    className="flex items-center gap-2 bg-violet-500 hover:bg-violet-600 text-white px-6 py-2.5 rounded-xl font-semibold transition-colors shadow-lg shadow-violet-500/30"
+                    className="flex items-center gap-2 bg-gradient-to-r from-violet-500 to-fuchsia-500 hover:from-violet-600 hover:to-fuchsia-600 text-white px-8 py-2.5 rounded-xl font-semibold transition-all shadow-lg shadow-violet-500/30 hover:shadow-violet-500/50 hover:-translate-y-0.5 active:translate-y-0"
                   >
                     {isSavingProfile ? (
                       <>
@@ -308,7 +391,7 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
                         <span>Saving...</span>
                       </>
                     ) : (
-                      <span>Save Profile</span>
+                      <span>Save Changes</span>
                     )}
                   </button>
                 </>
@@ -318,7 +401,7 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
                     setEditingData(profileData);
                     setIsEditingProfile(true);
                   }}
-                  className="bg-violet-500 hover:bg-violet-600 text-white px-6 py-2.5 rounded-xl font-semibold transition-colors shadow-lg shadow-violet-500/30"
+                  className="bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 px-8 py-2.5 rounded-xl font-semibold transition-all shadow-lg hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
                 >
                   Edit Profile
                 </button>

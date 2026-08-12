@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
+import Logo from '../assets/logo.png';
 import {
   LayoutDashboard,
   Users,
@@ -84,21 +85,19 @@ export default function Sidebar({ isOpen, toggleSidebar, openSettings, isSetting
       {/* Sidebar */}
       <aside className={`fixed inset-y-0 left-0 z-50 bg-white dark:bg-zinc-950 border-r border-slate-200 dark:border-dark-700 transform transition-all duration-300 ease-in-out sm:relative sm:z-50 sm:inset-auto flex flex-col h-screen ${isOpen ? 'translate-x-0 w-72' : '-translate-x-[120%] w-72 sm:translate-x-0 sm:w-20'}`}>
 
-        <div className="flex items-center justify-between h-20 px-6 border-b border-slate-200 dark:border-dark-700/50 shrink-0">
-          <div 
-            className="flex items-center gap-2 text-slate-800 dark:text-white overflow-hidden cursor-pointer"
+        <div className="relative flex items-center justify-center h-20 px-6 border-b border-slate-200 dark:border-dark-700/50 shrink-0">
+          <div
+            className="flex items-center text-slate-800 dark:text-white overflow-hidden cursor-pointer h-8"
             onClick={toggleSidebar}
             title="Toggle Sidebar"
           >
-            <div className="w-8 h-8 shrink-0 bg-violet-600 rounded-lg shadow-sm flex items-center justify-center text-white">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5">
-                <path d="M8 6v9a2 2 0 0 0 2 2" />
-                <path d="M14 6v9a2 2 0 0 0 2 2" />
-              </svg>
-            </div>
-            <span className={`text-xl font-bold tracking-tight whitespace-nowrap transition-opacity duration-300 ${!isOpen ? 'sm:opacity-0 sm:hidden' : 'opacity-100'}`}>Learnlike<sup className="font-normal text-sm">&reg;</sup></span>
+            <img
+              src={Logo}
+              alt="Learnlike Logo"
+              className={`h-8 transition-all duration-300 object-left ${!isOpen ? 'w-8 object-cover' : 'w-auto object-contain'}`}
+            />
           </div>
-          <button onClick={toggleSidebar} className={`sm:hidden text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 ${!isOpen ? 'hidden' : ''}`}>
+          <button onClick={toggleSidebar} className={`absolute right-4 sm:hidden text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 ${!isOpen ? 'hidden' : ''}`}>
             <X size={24} />
           </button>
         </div>
@@ -125,71 +124,60 @@ export default function Sidebar({ isOpen, toggleSidebar, openSettings, isSetting
 
 
 
-              <div className="py-4 relative">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-slate-200 dark:border-dark-700/50"></div>
-                </div>
-                <div className={`relative flex justify-center ${!isOpen ? 'sm:hidden' : ''}`}>
-                  <span className="bg-white dark:bg-zinc-950 px-3 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
-                    Financials & More
-                  </span>
-                </div>
-              </div>
+          <div className="py-4 relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200 dark:border-dark-700/50"></div>
+            </div>
+            <div className={`relative flex justify-center ${!isOpen ? 'sm:hidden' : ''}`}>
+              <span className="bg-white dark:bg-zinc-950 px-3 text-[10px] font-bold tracking-wider text-slate-400 uppercase">
+                Financials & More
+              </span>
+            </div>
+          </div>
 
-              {financialItems.map((item) => (
-                item.name === 'Settings' ? (
-                  <button
-                    key={item.name}
-                    onClick={openSettings}
-                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 overflow-hidden ${!isOpen ? 'sm:px-0 sm:justify-center' : ''} ${
-                      isSettingsOpen
-                        ? 'bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 font-medium'
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-dark-800 hover:text-slate-900 dark:hover:text-slate-200'
-                    }`}
-                    title={!isOpen ? item.name : ''}
-                  >
-                    <item.icon size={20} className="shrink-0" />
-                    <span className={`truncate transition-opacity duration-300 ${!isOpen ? 'sm:opacity-0 sm:hidden' : 'opacity-100'}`}>{item.name}</span>
-                  </button>
-                ) : (
-                  <NavLink
-                    key={item.name}
-                    to={item.path}
-                    onClick={handleNavClick}
-                    className={({ isActive }) =>
-                      `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 overflow-hidden ${!isOpen ? 'sm:px-0 sm:justify-center' : ''} ${isActive && !isSettingsOpen
-                        ? 'bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 font-medium'
-                        : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-dark-800 hover:text-slate-900 dark:hover:text-slate-200'
-                      }`
-                    }
-                    title={!isOpen ? item.name : ''}
-                  >
-                    <item.icon size={20} className="shrink-0" />
-                    <span className={`truncate transition-opacity duration-300 ${!isOpen ? 'sm:opacity-0 sm:hidden' : 'opacity-100'}`}>{item.name}</span>
-                  </NavLink>
-                )
-              ))}
+          {financialItems.map((item) => (
+            item.name === 'Settings' ? (
+              <button
+                key={item.name}
+                onClick={openSettings}
+                className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 overflow-hidden ${!isOpen ? 'sm:px-0 sm:justify-center' : ''} ${isSettingsOpen
+                    ? 'bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 font-medium'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-dark-800 hover:text-slate-900 dark:hover:text-slate-200'
+                  }`}
+                title={!isOpen ? item.name : ''}
+              >
+                <item.icon size={20} className="shrink-0" />
+                <span className={`truncate transition-opacity duration-300 ${!isOpen ? 'sm:opacity-0 sm:hidden' : 'opacity-100'}`}>{item.name}</span>
+              </button>
+            ) : (
+              <NavLink
+                key={item.name}
+                to={item.path}
+                onClick={handleNavClick}
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 overflow-hidden ${!isOpen ? 'sm:px-0 sm:justify-center' : ''} ${isActive && !isSettingsOpen
+                    ? 'bg-violet-50 dark:bg-violet-900/20 text-violet-600 dark:text-violet-400 font-medium'
+                    : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-dark-800 hover:text-slate-900 dark:hover:text-slate-200'
+                  }`
+                }
+                title={!isOpen ? item.name : ''}
+              >
+                <item.icon size={20} className="shrink-0" />
+                <span className={`truncate transition-opacity duration-300 ${!isOpen ? 'sm:opacity-0 sm:hidden' : 'opacity-100'}`}>{item.name}</span>
+              </NavLink>
+            )
+          ))}
 
 
 
         </nav>
 
-        <div className={`shrink-0 p-4 border-t border-slate-200 dark:border-dark-700/50 flex flex-col items-center ${!isOpen ? 'sm:hidden' : ''}`}>
-
-
-          <div className="text-center w-full flex flex-col items-center">
-            <span className="text-[11px] text-slate-500 dark:text-slate-400 mb-1">Powered by</span>
-            <div className="flex items-center justify-center gap-1.5 mb-2">
-              <div className="w-5 h-5 bg-violet-600 rounded flex items-center justify-center text-white">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" className="w-3.5 h-3.5">
-                  <path d="M9 6v9c0 1.5 1 2.5 2.5 3" />
-                  <path d="M15 6v9c0 1.5 1 2.5 2.5 3" />
-                </svg>
-              </div>
-              <span className="font-bold text-slate-800 dark:text-white text-sm tracking-tight">Learnlike<sup className="font-normal text-[8px]">&reg;</sup></span>
-            </div>
-          </div>
+        {/* Powered by Footer */}
+        <div className={`p-4 border-t border-slate-200 dark:border-dark-700/50 flex flex-col items-center justify-center shrink-0 transition-opacity duration-300 ${!isOpen ? 'sm:opacity-0 sm:hidden' : 'opacity-100'}`}>
+          <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium mb-1">Powered by</span>
+          <img src={Logo} alt="Learnlike Logo" className="h-6 w-auto object-contain" />
         </div>
+
       </aside>
     </>
   );

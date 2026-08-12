@@ -39,7 +39,7 @@ export default function FinancialSummaryModal({ onClose }) {
   const [report, setReport] = useState({
     generatedOn: new Date().toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'medium' }),
     period: 'Jul 01, 2026 - Jul 29, 2026',
-    
+
     // Metrics
     revVal: '1,25,80,000', revChg: '+12.45%',
     expVal: '78,45,000', expChg: '+8.32%',
@@ -81,7 +81,7 @@ export default function FinancialSummaryModal({ onClose }) {
 
   const handleDownloadPDF = () => {
     const doc = new jsPDF();
-    
+
     const addText = (text, x, y, size = 10, isBold = false, align = "left", color = [0, 0, 0], baseline = "alphabetic") => {
       doc.setFontSize(size);
       doc.setFont("helvetica", isBold ? "bold" : "normal");
@@ -89,17 +89,17 @@ export default function FinancialSummaryModal({ onClose }) {
       doc.text(String(text), x, y, { align, baseline });
     };
 
-    const primary = [124, 58, 237]; 
+    const primary = [124, 58, 237];
     const textDark = [15, 23, 42];
     const textLight = [100, 116, 139];
     const green = [34, 197, 94];
 
     // Logo Lockup
-    try { doc.addImage(LOGO_BASE64, 'PNG', 15, 10, 40, 10.66); } catch(e){}
+    try { doc.addImage(LOGO_BASE64, 'PNG', 15, 10, 40, 10.66); } catch (e) { }
 
     // Title vertically centered with logo
     addText(`FINANCIAL SUMMARY REPORT`, 195, 15.33, 13, true, "right", textDark, "middle");
-    
+
     // Elegant full-width separator line
     doc.setDrawColor(226, 232, 240);
     doc.setLineWidth(0.5);
@@ -112,7 +112,7 @@ export default function FinancialSummaryModal({ onClose }) {
 
     doc.setFillColor(primary[0], primary[1], primary[2]);
     doc.roundedRect(20, 37, 8, 8, 2, 2, "F");
-    addText("i", 24, 42.5, 10, true, "center", [255, 255, 255]); 
+    addText("i", 24, 42.5, 10, true, "center", [255, 255, 255]);
     addText("Report Details", 32, 41, 12, true, "left", textDark, "middle");
 
     doc.roundedRect(20, 48, 50, 12, 1, 1, "S");
@@ -123,7 +123,7 @@ export default function FinancialSummaryModal({ onClose }) {
     addText("Report Type", 87, 53, 7, false, "left", textLight);
     addText("Financial Summary", 87, 57, 8, true, "left", textDark);
 
-    doc.setFillColor(245, 243, 255); 
+    doc.setFillColor(245, 243, 255);
     doc.roundedRect(130, 48, 60, 12, 1, 1, "FD");
     addText("Reporting Period", 142, 53, 7, true, "left", primary);
     addText(report.period, 142, 57, 8, true, "left", textDark);
@@ -161,15 +161,15 @@ export default function FinancialSummaryModal({ onClose }) {
     // Charts Area
     doc.roundedRect(15, 126, 87.5, 62, 2, 2, "S");
     addText("Revenue vs Expenses", 20, 132, 9, true, "left", textDark);
-    
+
     doc.setDrawColor(226, 232, 240);
-    doc.line(25, 178, 95, 178); 
-    doc.line(25, 138, 25, 178); 
-    
+    doc.line(25, 178, 95, 178);
+    doc.line(25, 138, 25, 178);
+
     [0, 20, 40, 60, 80, 100, 120, 140].reverse().forEach((val, i) => {
-        addText(String(val), 23, 138 + (i * 5.7), 6, false, "right", textLight);
+      addText(String(val), 23, 138 + (i * 5.7), 6, false, "right", textLight);
     });
-    
+
     const barData = [
       { rev: 70, exp: 40, lbl: 'Jan' }, { rev: 85, exp: 50, lbl: 'Feb' },
       { rev: 95, exp: 55, lbl: 'Mar' }, { rev: 100, exp: 60, lbl: 'Apr' },
@@ -178,41 +178,41 @@ export default function FinancialSummaryModal({ onClose }) {
     ];
     let barX = 28;
     barData.forEach(d => {
-       const revH = (d.rev / 140) * 40;
-       const expH = (d.exp / 140) * 40;
-       doc.setFillColor(124, 58, 237);
-       doc.rect(barX, 178 - revH, 3, revH, "F");
-       doc.setFillColor(196, 181, 253);
-       doc.rect(barX + 3.5, 178 - expH, 3, expH, "F");
-       addText(d.lbl, barX + 3.5, 182, 6, false, "center", textLight);
-       barX += 9.5;
+      const revH = (d.rev / 140) * 40;
+      const expH = (d.exp / 140) * 40;
+      doc.setFillColor(124, 58, 237);
+      doc.rect(barX, 178 - revH, 3, revH, "F");
+      doc.setFillColor(196, 181, 253);
+      doc.rect(barX + 3.5, 178 - expH, 3, expH, "F");
+      addText(d.lbl, barX + 3.5, 182, 6, false, "center", textLight);
+      barX += 9.5;
     });
 
     // Donut chart mock
     doc.setDrawColor(226, 232, 240);
     doc.roundedRect(107.5, 126, 87.5, 62, 2, 2, "S");
     addText("Expense Breakdown", 112.5, 132, 9, true, "left", textDark);
-    
+
     doc.setFillColor(124, 58, 237);
     doc.circle(135, 157, 16, "F");
     doc.setFillColor(255, 255, 255);
-    doc.circle(135, 157, 8, "F"); 
-    
+    doc.circle(135, 157, 8, "F");
+
     const legends = [
-        { label: report.leg1Lbl, val: "Rs " + report.leg1, c: [124, 58, 237], icon: "O" },
-        { label: report.leg2Lbl, val: "Rs " + report.leg2, c: [59, 130, 246], icon: "M" },
-        { label: report.leg3Lbl, val: "Rs " + report.leg3, c: [34, 197, 94], icon: "E" },
-        { label: report.leg4Lbl, val: "Rs " + report.leg4, c: [249, 115, 22], icon: "A" },
-        { label: report.leg5Lbl, val: "Rs " + report.leg5, c: [148, 163, 184], icon: "O" }
+      { label: report.leg1Lbl, val: "Rs " + report.leg1, c: [124, 58, 237], icon: "O" },
+      { label: report.leg2Lbl, val: "Rs " + report.leg2, c: [59, 130, 246], icon: "M" },
+      { label: report.leg3Lbl, val: "Rs " + report.leg3, c: [34, 197, 94], icon: "E" },
+      { label: report.leg4Lbl, val: "Rs " + report.leg4, c: [249, 115, 22], icon: "A" },
+      { label: report.leg5Lbl, val: "Rs " + report.leg5, c: [148, 163, 184], icon: "O" }
     ];
     let legY = 140;
     legends.forEach(l => {
-        doc.setFillColor(l.c[0], l.c[1], l.c[2]);
-        doc.roundedRect(160, legY, 4, 4, 1, 1, "F");
-        addText(l.icon, 162, legY + 2, 4.5, true, "center", [255, 255, 255], "middle");
-        addText(l.label, 166, legY + 3, 7, false, "left", textDark);
-        addText(l.val, 166, legY + 7, 7, true, "left", textDark);
-        legY += 9.5;
+      doc.setFillColor(l.c[0], l.c[1], l.c[2]);
+      doc.roundedRect(160, legY, 4, 4, 1, 1, "F");
+      addText(l.icon, 162, legY + 2, 4.5, true, "center", [255, 255, 255], "middle");
+      addText(l.label, 166, legY + 3, 7, false, "left", textDark);
+      addText(l.val, 166, legY + 7, 7, true, "left", textDark);
+      legY += 9.5;
     });
 
     // Summary Table
@@ -227,26 +227,26 @@ export default function FinancialSummaryModal({ onClose }) {
     addText("Change (%)", 190, 207, 8, true, "right", [255, 255, 255]);
 
     const tableRows = [
-        { p: "Total Revenue", c: report.r1c, pr: report.r1p, ch: report.r1d, chp: report.r1dp },
-        { p: "Total Expenses", c: report.r2c, pr: report.r2p, ch: report.r2d, chp: report.r2dp },
-        { p: "Net Profit", c: report.r3c, pr: report.r3p, ch: report.r3d, chp: report.r3dp },
-        { p: "Profit Margin (%)", c: report.r4c, pr: report.r4p, ch: report.r4d, chp: report.r4dp },
-        { p: "Total Transactions", c: report.r5c, pr: report.r5p, ch: report.r5d, chp: report.r5dp },
-        { p: "Average Order Value", c: report.r6c, pr: report.r6p, ch: report.r6d, chp: report.r6dp }
+      { p: "Total Revenue", c: report.r1c, pr: report.r1p, ch: report.r1d, chp: report.r1dp },
+      { p: "Total Expenses", c: report.r2c, pr: report.r2p, ch: report.r2d, chp: report.r2dp },
+      { p: "Net Profit", c: report.r3c, pr: report.r3p, ch: report.r3d, chp: report.r3dp },
+      { p: "Profit Margin (%)", c: report.r4c, pr: report.r4p, ch: report.r4d, chp: report.r4dp },
+      { p: "Total Transactions", c: report.r5c, pr: report.r5p, ch: report.r5d, chp: report.r5dp },
+      { p: "Average Order Value", c: report.r6c, pr: report.r6p, ch: report.r6d, chp: report.r6dp }
     ];
 
     let tY = 215;
     tableRows.forEach((r, i) => {
-        if(i % 2 === 0) {
-            doc.setFillColor(248, 250, 252);
-            doc.rect(15, tY - 5, 180, 8, "F");
-        }
-        addText(r.p, 20, tY, 8, false, "left", textDark);
-        addText(r.c, 75, tY, 8, false, "right", textDark);
-        addText(r.pr, 115, tY, 8, false, "right", textDark);
-        addText(r.ch, 155, tY, 8, false, "right", textDark);
-        addText(r.chp, 190, tY, 8, true, "right", green);
-        tY += 8;
+      if (i % 2 === 0) {
+        doc.setFillColor(248, 250, 252);
+        doc.rect(15, tY - 5, 180, 8, "F");
+      }
+      addText(r.p, 20, tY, 8, false, "left", textDark);
+      addText(r.c, 75, tY, 8, false, "right", textDark);
+      addText(r.pr, 115, tY, 8, false, "right", textDark);
+      addText(r.ch, 155, tY, 8, false, "right", textDark);
+      addText(r.chp, 190, tY, 8, true, "right", green);
+      tY += 8;
     });
 
     doc.setDrawColor(226, 232, 240);
@@ -256,14 +256,14 @@ export default function FinancialSummaryModal({ onClose }) {
     // Signature Footer
     let sy = 275;
     addText('Approved:', 15, sy, 9, true, 'left', textDark);
-    
+
     // Signature placeholder graphic (cursive text)
     doc.setFont('times', 'italic');
     doc.setFontSize(14);
     doc.setTextColor(148, 163, 184); // slate-400
     doc.text('Signature', 40, sy + 1);
     doc.setFont('helvetica', 'normal'); // reset font
-    
+
     sy += 6;
     doc.setDrawColor(203, 213, 225); doc.setLineWidth(0.3);
     doc.line(15, sy, 80, sy);
@@ -311,7 +311,7 @@ export default function FinancialSummaryModal({ onClose }) {
         </div>
 
         <div style={{ padding: '30px 40px', fontFamily: 'Arial, sans-serif' }}>
-          
+
           {/* Header */}
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
             <img src={LOGO_BASE64} alt="Learnlike Logo" style={{ height: 36, objectFit: 'contain' }} />
@@ -331,7 +331,7 @@ export default function FinancialSummaryModal({ onClose }) {
               </div>
               <h2 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', margin: 0 }}>Report Details</h2>
             </div>
-            
+
             <div style={{ display: 'flex', gap: 16, marginBottom: 16 }}>
               <div style={{ flex: 1, border: '1px solid #e2e8f0', borderRadius: 6, padding: '10px 14px' }}>
                 <div style={{ fontSize: '0.65rem', color: '#64748b', marginBottom: 4 }}>Generated On</div>
@@ -423,7 +423,7 @@ export default function FinancialSummaryModal({ onClose }) {
 
           {/* Charts Row */}
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginBottom: 20 }}>
-            
+
             {/* HTML Mock of Bar Chart to match PDF */}
             <div style={{ border: '1px solid #e2e8f0', borderRadius: 8, padding: '16px' }}>
               <h3 style={{ fontSize: '0.85rem', fontWeight: 700, color: '#0f172a', margin: '0 0 16px 0' }}>Revenue vs Expenses</h3>
@@ -432,10 +432,10 @@ export default function FinancialSummaryModal({ onClose }) {
                   <span>140</span><span>120</span><span>100</span><span>80</span><span>60</span><span>40</span><span>20</span><span style={{ position: 'relative', top: 5 }}>0</span>
                 </div>
                 <div style={{ flex: 1, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-around', paddingLeft: 10, borderBottom: '1px solid #e2e8f0', position: 'relative' }}>
-                  {[{r: 70, e: 40}, {r: 85, e: 50}, {r: 95, e: 55}, {r: 100, e: 60}, {r: 110, e: 65}, {r: 115, e: 68}, {r: 125, e: 75}].map((d, i) => (
+                  {[{ r: 70, e: 40 }, { r: 85, e: 50 }, { r: 95, e: 55 }, { r: 100, e: 60 }, { r: 110, e: 65 }, { r: 115, e: 68 }, { r: 125, e: 75 }].map((d, i) => (
                     <div key={i} style={{ display: 'flex', gap: 2, height: '100%', alignItems: 'flex-end' }}>
-                      <div style={{ width: 10, height: `${(d.r/140)*100}%`, background: '#7c3aed' }} />
-                      <div style={{ width: 10, height: `${(d.e/140)*100}%`, background: '#c4b5fd' }} />
+                      <div style={{ width: 10, height: `${(d.r / 140) * 100}%`, background: '#7c3aed' }} />
+                      <div style={{ width: 10, height: `${(d.e / 140) * 100}%`, background: '#c4b5fd' }} />
                     </div>
                   ))}
                 </div>
@@ -511,8 +511,8 @@ export default function FinancialSummaryModal({ onClose }) {
               <div style={{ fontWeight: 700, color: '#1e3a8a', fontSize: '0.85rem' }}>
                 Approved:
               </div>
-              <div style={{ 
-                color: '#94a3b8', fontSize: '1.2rem', fontFamily: 'cursive', 
+              <div style={{
+                color: '#94a3b8', fontSize: '1.2rem', fontFamily: 'cursive',
                 transform: 'rotate(-5deg)', userSelect: 'none',
               }}>
                 Signature
