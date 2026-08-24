@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
+import ViewModal from '../components/ViewModal';
 import { createPortal } from 'react-dom';
-import { CreditCard, Plus, Search, Calendar, Hash, Building2, FileCheck, DollarSign, Activity, AlignLeft, Check, Trash2, X } from 'lucide-react';
+import { CreditCard, Plus, Search, Calendar, Hash, Building2, FileCheck, DollarSign, Activity, AlignLeft, Check, Eye, Trash2, X } from 'lucide-react';
 
 export default function VendorPayments() {
   const [records, setRecords] = useState(() => {
@@ -13,6 +14,7 @@ export default function VendorPayments() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [viewingRecord, setViewingRecord] = useState(null);
 
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
@@ -188,8 +190,8 @@ export default function VendorPayments() {
                         {record.paymentMethod}
                       </div>
                     </td>
-                    <td className="py-4 px-6 text-right">
-                      <button 
+                    <td className="py-4 px-6 text-right"><div className="flex items-center justify-end gap-1">
+                        <button 
                         onClick={() => handleEdit(record)}
                         className="p-2 text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 rounded-lg transition-colors inline-flex mr-1"
                         title="Edit Payment"
@@ -202,8 +204,7 @@ export default function VendorPayments() {
                         title="Delete Payment"
                       >
                         <Trash2 size={18} />
-                      </button>
-                    </td>
+                      </button></div></td>
                   </tr>
                 ))}
               </tbody>
@@ -385,6 +386,9 @@ export default function VendorPayments() {
           </div>
         </div>
       , document.body)}
-    </div>
+    
+      
+  {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ViewModal from '../components/ViewModal';
 import { FilePlus, Send, Save, Plus, Trash2, CheckCircle2, XCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
@@ -27,6 +28,7 @@ export default function CreateInvoice() {
     { id: 1, description: '', quantity: 1, price: 0 }
   ]);
   const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
+  const [viewingRecord, setViewingRecord] = useState(null);
 
   const showNotification = (message, type = 'success') => {
     setToast({ show: true, message, type });
@@ -61,11 +63,13 @@ export default function CreateInvoice() {
       showNotification("Please enter a client name.", "error");
       return;
     }
-    
+
     // Save to localStorage so it appears in Invoice History
     const existingInvoices = JSON.parse(localStorage.getItem('invoicesData') || '[]');
     const newId = invoice.invoiceNumber || `INV-2026-${String(existingInvoices.length + 1).padStart(3, '0')}`;
-    
+
+    const issuingCompany = JSON.parse(localStorage.getItem('learnlike_company_profile') || '{}').name || 'LearnLike';
+
     const newInvoice = {
       id: newId,
       clientId: invoice.clientId,
@@ -85,11 +89,12 @@ export default function CreateInvoice() {
       baseTotal: baseTotal,
       gstAmount: gstAmount,
       total: finalTotal,
-      status: 'Unpaid' // Default status
+      status: 'Unpaid', // Default status
+      issuingCompany: issuingCompany
     };
-    
+
     localStorage.setItem('invoicesData', JSON.stringify([newInvoice, ...existingInvoices]));
-    
+
     showNotification("Invoice saved successfully!", "success");
   };
 
@@ -98,10 +103,9 @@ export default function CreateInvoice() {
       {/* Toast Notification */}
       {toast.show && (
         <div className="fixed top-6 right-6 z-50 animate-fade-in">
-          <div className={`flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border ${
-            toast.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-300' :
+          <div className={`flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg border ${toast.type === 'success' ? 'bg-emerald-50 border-emerald-200 text-emerald-800 dark:bg-emerald-900/30 dark:border-emerald-800 dark:text-emerald-300' :
             'bg-red-50 border-red-200 text-red-800 dark:bg-red-900/30 dark:border-red-800 dark:text-red-300'
-          }`}>
+            }`}>
             {toast.type === 'success' ? <CheckCircle2 size={20} /> : <XCircle size={20} />}
             <span className="font-medium">{toast.message}</span>
           </div>
@@ -122,7 +126,7 @@ export default function CreateInvoice() {
             Cancel
           </button>
           <button onClick={handleSave} className="btn-primary flex items-center gap-2">
-            <Save size={16} /> Save & Generate
+            <Save size={16} /> Save Invoice
           </button>
         </div>
       </div>
@@ -135,73 +139,73 @@ export default function CreateInvoice() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Client ID</label>
-                <input 
-                  type="text" 
-                  className="input-field" 
-                  value={invoice.clientId} 
-                  onChange={(e) => setInvoice({ ...invoice, clientId: e.target.value })} 
+                <input
+                  type="text"
+                  className="input-field"
+                  value={invoice.clientId}
+                  onChange={(e) => setInvoice({ ...invoice, clientId: e.target.value })}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Company Name</label>
-                <input 
-                  type="text" 
-                  className="input-field" 
-                  value={invoice.client} 
-                  onChange={(e) => setInvoice({ ...invoice, client: e.target.value })} 
+                <input
+                  type="text"
+                  className="input-field"
+                  value={invoice.client}
+                  onChange={(e) => setInvoice({ ...invoice, client: e.target.value })}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Contact Person</label>
-                <input 
-                  type="text" 
-                  className="input-field" 
-                  value={invoice.contactPerson} 
-                  onChange={(e) => setInvoice({ ...invoice, contactPerson: e.target.value })} 
+                <input
+                  type="text"
+                  className="input-field"
+                  value={invoice.contactPerson}
+                  onChange={(e) => setInvoice({ ...invoice, contactPerson: e.target.value })}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Email</label>
-                <input 
-                  type="email" 
-                  className="input-field" 
-                  value={invoice.email} 
-                  onChange={(e) => setInvoice({ ...invoice, email: e.target.value })} 
+                <input
+                  type="email"
+                  className="input-field"
+                  value={invoice.email}
+                  onChange={(e) => setInvoice({ ...invoice, email: e.target.value })}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Phone</label>
-                <input 
-                  type="text" 
-                  className="input-field" 
-                  value={invoice.phone} 
-                  onChange={(e) => setInvoice({ ...invoice, phone: e.target.value })} 
+                <input
+                  type="text"
+                  className="input-field"
+                  value={invoice.phone}
+                  onChange={(e) => setInvoice({ ...invoice, phone: e.target.value })}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">GST Number</label>
-                <input 
-                  type="text" 
-                  className="input-field" 
-                  value={invoice.gstNumber} 
-                  onChange={(e) => setInvoice({ ...invoice, gstNumber: e.target.value })} 
+                <input
+                  type="text"
+                  className="input-field"
+                  value={invoice.gstNumber}
+                  onChange={(e) => setInvoice({ ...invoice, gstNumber: e.target.value })}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">PAN Number</label>
-                <input 
-                  type="text" 
-                  className="input-field" 
-                  value={invoice.panNumber} 
-                  onChange={(e) => setInvoice({ ...invoice, panNumber: e.target.value })} 
+                <input
+                  type="text"
+                  className="input-field"
+                  value={invoice.panNumber}
+                  onChange={(e) => setInvoice({ ...invoice, panNumber: e.target.value })}
                 />
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Address</label>
-                <textarea 
-                  className="input-field resize-none h-20" 
-                  value={invoice.address} 
-                  onChange={(e) => setInvoice({ ...invoice, address: e.target.value })} 
+                <textarea
+                  className="input-field resize-none h-20"
+                  value={invoice.address}
+                  onChange={(e) => setInvoice({ ...invoice, address: e.target.value })}
                 ></textarea>
               </div>
             </div>
@@ -212,39 +216,39 @@ export default function CreateInvoice() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Invoice Number</label>
-                <input 
-                  type="text" 
-                  className="input-field" 
-                  value={invoice.invoiceNumber} 
+                <input
+                  type="text"
+                  className="input-field"
+                  value={invoice.invoiceNumber}
                   onChange={(e) => setInvoice({ ...invoice, invoiceNumber: e.target.value })}
-                  placeholder="Leave blank to auto-generate (e.g. INV-2026-001)" 
+                  placeholder="Leave blank to auto-generate (e.g. INV-2026-001)"
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Invoice Date</label>
-                <input 
-                  type="date" 
-                  className="input-field text-slate-500" 
-                  value={invoice.date} 
-                  onChange={(e) => setInvoice({ ...invoice, date: e.target.value })} 
+                <input
+                  type="date"
+                  className="input-field text-slate-500"
+                  value={invoice.date}
+                  onChange={(e) => setInvoice({ ...invoice, date: e.target.value })}
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Due Date</label>
-                <input 
-                  type="date" 
-                  className="input-field text-slate-500" 
-                  value={invoice.dueDate} 
-                  onChange={(e) => setInvoice({ ...invoice, dueDate: e.target.value })} 
+                <input
+                  type="date"
+                  className="input-field text-slate-500"
+                  value={invoice.dueDate}
+                  onChange={(e) => setInvoice({ ...invoice, dueDate: e.target.value })}
                 />
               </div>
               <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Purchase Order (PO) Number</label>
-                <input 
-                  type="text" 
-                  className="input-field" 
-                  value={invoice.poNumber} 
-                  onChange={(e) => setInvoice({ ...invoice, poNumber: e.target.value })} 
+                <input
+                  type="text"
+                  className="input-field"
+                  value={invoice.poNumber}
+                  onChange={(e) => setInvoice({ ...invoice, poNumber: e.target.value })}
                 />
               </div>
             </div>
@@ -292,19 +296,59 @@ export default function CreateInvoice() {
               <Plus size={16} /> Add Line Item
             </button>
           </div>
+
+          <div className="glass-card p-6 overflow-hidden">
+            <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Brand Bank Details</h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left border-collapse min-w-[500px]">
+                <thead>
+                  <tr className="border-b border-slate-200 dark:border-dark-700 bg-slate-50/50 dark:bg-dark-800/50">
+                    <th className="p-3 text-xs font-semibold text-slate-500 uppercase">Brand</th>
+                    <th className="p-3 text-xs font-semibold text-slate-500 uppercase">Bank Name</th>
+                    <th className="p-3 text-xs font-semibold text-slate-500 uppercase">Account Number</th>
+                    <th className="p-3 text-xs font-semibold text-slate-500 uppercase">IFSC Code</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-dark-800">
+                  {[
+                    { brand: 'LearnLike', bg: 'bg-violet-50 dark:bg-violet-900/10' },
+                    { brand: 'TDELVE', bg: 'bg-blue-50 dark:bg-blue-900/10' },
+                    { brand: 'Deskjobs', bg: 'bg-emerald-50 dark:bg-emerald-900/10' },
+                    { brand: 'Lanternet', bg: 'bg-amber-50 dark:bg-amber-900/10' }
+                  ].map((row, idx) => (
+                    <tr key={idx} className={row.bg}>
+                      <td className="p-3 font-medium text-slate-800 dark:text-slate-200">{row.brand}</td>
+                      <td className="p-3">
+                        <input type="text" className="input-field py-1.5 text-sm bg-white/50 dark:bg-dark-900/50" placeholder="Bank Name" />
+                      </td>
+                      <td className="p-3">
+                        <input type="text" className="input-field py-1.5 text-sm bg-white/50 dark:bg-dark-900/50" placeholder="Account Number" />
+                      </td>
+                      <td className="p-3">
+                        <input type="text" className="input-field py-1.5 text-sm bg-white/50 dark:bg-dark-900/50" placeholder="IFSC Code" />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-3">
+              Fill in the bank details above for quick reference or to include in the generated invoice.
+            </p>
+          </div>
         </div>
 
         {/* Right Column - Summary */}
         <div className="space-y-6">
           <div className="glass-card p-6">
             <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Summary</h2>
-            
+
             <div className="mb-4">
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">GST Rate (%)</label>
-              <input 
-                type="number" 
-                className="input-field" 
-                value={invoice.gstRate} 
+              <input
+                type="number"
+                className="input-field"
+                value={invoice.gstRate}
                 onChange={(e) => setInvoice({ ...invoice, gstRate: e.target.value })}
                 min="0"
                 step="1"
@@ -326,13 +370,13 @@ export default function CreateInvoice() {
               </div>
             </div>
           </div>
-          
+
           <div className="glass-card p-6">
             <h2 className="text-lg font-bold text-slate-800 dark:text-white mb-4">Payment Information</h2>
             <div className="space-y-4">
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Payment Terms</label>
-                <input 
+                <input
                   type="text"
                   className="input-field w-full"
                   placeholder="e.g. Net 30"
@@ -342,25 +386,26 @@ export default function CreateInvoice() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Bank Account / Payment Details</label>
-                <textarea 
-                  className="input-field resize-none h-20" 
-                  value={invoice.bankDetails} 
+                <textarea
+                  className="input-field resize-none h-20"
+                  value={invoice.bankDetails}
                   onChange={(e) => setInvoice({ ...invoice, bankDetails: e.target.value })}
                 ></textarea>
               </div>
             </div>
           </div>
-          
+
           <div className="glass-card p-6">
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Additional Notes</label>
-            <textarea 
-              className="input-field resize-none h-24" 
-              value={invoice.note} 
+            <textarea
+              className="input-field resize-none h-24"
+              value={invoice.note}
               onChange={(e) => setInvoice({ ...invoice, note: e.target.value })}
             ></textarea>
           </div>
         </div>
       </div>
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

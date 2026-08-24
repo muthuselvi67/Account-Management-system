@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import ViewModal from '../components/ViewModal';
 import { createPortal } from 'react-dom';
-import { ClipboardCheck, X, CheckCircle, Clock, Trash2, Edit2 } from 'lucide-react';
+import { ClipboardCheck, X, CheckCircle, Clock, Eye, Trash2, Edit2 } from 'lucide-react';
 
 export default function ClaimsPlaceholder() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [viewingRecord, setViewingRecord] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [claims, setClaims] = useState(() => {
@@ -218,6 +220,9 @@ export default function ClaimsPlaceholder() {
 
       {isModalOpen && createPortal(modal, document.body)}
       {deleteConfirmId && createPortal(deleteModal, document.body)}
-    </div>
+    
+
+  {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

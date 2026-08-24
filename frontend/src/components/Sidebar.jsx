@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import Logo from '../assets/logo.png';
+import LogoDark from '../assets/logo_dark.png';
+
 import {
   LayoutDashboard,
   Users,
@@ -43,6 +45,7 @@ const mainNavItems = [
   { name: 'Projects', path: '/projects', icon: FolderKanban },
   { name: 'Client', path: '/clients-hub', icon: Briefcase },
   { name: 'Companies (Vendors)', path: '/companies-hub', icon: Building2 },
+  { name: 'Quotations', path: '/client-quotations', icon: FileText },
 ];
 
 const financialItems = [
@@ -94,7 +97,12 @@ export default function Sidebar({ isOpen, toggleSidebar, openSettings, isSetting
             <img
               src={Logo}
               alt="Learnlike Logo"
-              className={`h-8 transition-all duration-300 object-left ${!isOpen ? 'w-8 object-cover' : 'w-auto object-contain'}`}
+              className={`h-8 transition-all duration-300 object-left dark:hidden ${!isOpen ? 'w-8 object-cover' : 'w-auto object-contain'}`}
+            />
+            <img
+              src={LogoDark}
+              alt="Learnlike Logo"
+              className={`h-8 transition-all duration-300 object-left hidden dark:block ${!isOpen ? 'w-8 object-cover' : 'w-auto object-contain'}`}
             />
           </div>
           <button onClick={toggleSidebar} className={`absolute right-4 sm:hidden text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 ${!isOpen ? 'hidden' : ''}`}>
@@ -175,7 +183,8 @@ export default function Sidebar({ isOpen, toggleSidebar, openSettings, isSetting
         {/* Powered by Footer */}
         <div className={`p-4 border-t border-slate-200 dark:border-dark-700/50 flex flex-col items-center justify-center shrink-0 transition-opacity duration-300 ${!isOpen ? 'sm:opacity-0 sm:hidden' : 'opacity-100'}`}>
           <span className="text-[10px] text-slate-400 dark:text-slate-500 font-medium mb-1">Powered by</span>
-          <img src={Logo} alt="Learnlike Logo" className="h-6 w-auto object-contain" />
+          <img src={Logo} alt="Learnlike Logo" className="h-6 w-auto object-contain dark:hidden" />
+          <img src={LogoDark} alt="Learnlike Logo" className="h-6 w-auto object-contain hidden dark:block" />
         </div>
 
       </aside>

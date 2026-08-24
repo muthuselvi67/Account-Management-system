@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import ViewModal from '../components/ViewModal';
 import { Search, Plus, FolderKanban, FolderCheck, Users, Calendar, ArrowRight, X, Trash2 } from 'lucide-react';
 
 export default function Projects() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [viewingRecord, setViewingRecord] = useState(null);
   const [isNewProjectModalOpen, setIsNewProjectModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
   const [isEditingProject, setIsEditingProject] = useState(false);
@@ -298,6 +300,7 @@ export default function Projects() {
           </div>
         </div>
       )}
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

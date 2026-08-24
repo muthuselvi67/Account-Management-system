@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
+import ViewModal from '../components/ViewModal';
 import { MessageSquare, X, Plus, Search, Calendar, User, Phone, CheckCircle, Mail, Building2, FileText, Activity, AlignLeft, Check, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
@@ -13,6 +14,7 @@ export default function ClientCommunications() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [viewingRecord, setViewingRecord] = useState(null);
 
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
@@ -202,8 +204,8 @@ export default function ClientCommunications() {
                     <td className="py-4 px-6">
                       {getStatusBadge(record.status)}
                     </td>
-                    <td className="py-4 px-6 text-right">
-                      <button 
+                    <td className="py-4 px-6 text-right"><div className="flex items-center justify-end gap-1">
+                        <button 
                         onClick={() => handleEdit(record)}
                         className="text-purple-600 hover:text-purple-700 text-sm font-medium transition-colors mr-3"
                       >
@@ -215,6 +217,7 @@ export default function ClientCommunications() {
                       >
                         Delete
                       </button>
+                      </div>
                     </td>
                   </tr>
                 ))}
@@ -368,6 +371,9 @@ export default function ClientCommunications() {
           </div>
         </div>
       )}
-    </div>
+    
+      
+  {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

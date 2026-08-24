@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import ViewModal from '../components/ViewModal';
 import { Search, Plus, Wallet, UserCircle, X, CheckCircle2, Download, AlertCircle, Trash2 } from 'lucide-react';
 import { jsPDF } from 'jspdf';
 import { LOGO_BASE64 } from '../utils/logoBase64';
@@ -6,6 +7,7 @@ import PaySlipModal from '../components/PaySlipModal';
 
 export default function Salaries() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [viewingRecord, setViewingRecord] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newSalary, setNewSalary] = useState({ trainer: '', month: '', base: '', bonus: '0', ded: '0', status: 'Pending' });
   const [formError, setFormError] = useState('');
@@ -508,7 +510,8 @@ export default function Salaries() {
               <button onClick={() => { setSalaries(salaries.filter(s => s.id !== deleteConfirmId)); setDeleteConfirmId(null); }} className="flex-1 btn-primary bg-violet-600 hover:bg-violet-700 py-2.5 border-0">Yes, Remove</button>
             </div>
           </div>
-        </div>
+          {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
       )}
 
       {/* Pay Slip Modal */}

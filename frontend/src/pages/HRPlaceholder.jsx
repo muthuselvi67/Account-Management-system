@@ -16,6 +16,7 @@ export default function HRPlaceholder({ title, description }) {
           The <strong>{title}</strong> module is currently being developed and will be available in an upcoming update. Stay tuned!
         </p>
       </div>
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

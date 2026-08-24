@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ViewModal from '../components/ViewModal';
 import { Link } from 'react-router-dom';
 import { 
   MessageSquare, 
@@ -65,7 +66,7 @@ const clientModules = [
     title: 'Sales Invoices (GST)',
     description: 'Manage sales invoices issued to clients.',
     icon: FileCheck,
-    path: '/client-invoices',
+    path: '/create-invoice',
     iconColor: 'text-blue-600',
     iconBg: 'bg-blue-50',
     borderColor: 'border-blue-100',
@@ -113,6 +114,7 @@ const clientModules = [
 
 export default function ClientsHub() {
   const [transactions, setTransactions] = useState([]);
+  const [viewingRecord, setViewingRecord] = useState(null);
 
   useEffect(() => {
     let allTx = [];
@@ -192,7 +194,7 @@ export default function ClientsHub() {
                 <th className="px-6 py-4 font-medium">Type</th>
                 <th className="px-6 py-4 font-medium">Reference</th>
                 <th className="px-6 py-4 font-medium">Client</th>
-                <th className="px-6 py-4 font-medium text-right">Amount</th>
+                <th className="px-6 py-4 font-medium">Amount</th>
                 <th className="px-6 py-4 font-medium">Status</th>
               </tr>
             </thead>
@@ -213,7 +215,7 @@ export default function ClientsHub() {
                     </td>
                     <td className="px-6 py-4 text-sm font-bold text-slate-700 dark:text-slate-300">{tx.reference}</td>
                     <td className="px-6 py-4 text-sm text-slate-700 dark:text-slate-300">{tx.client}</td>
-                    <td className="px-6 py-4 text-sm font-bold text-slate-900 dark:text-white text-right">
+                    <td className="px-6 py-4 text-sm font-bold text-slate-900 dark:text-white">
                       ₹{tx.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </td>
                     <td className="px-6 py-4">
@@ -240,6 +242,7 @@ export default function ClientsHub() {
           </table>
         </div>
       </div>
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

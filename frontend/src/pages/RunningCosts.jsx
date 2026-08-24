@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import ViewModal from '../components/ViewModal';
 import { createPortal } from 'react-dom';
-import { TrendingDown, X, AlertCircle, Trash2, Edit2 } from 'lucide-react';
+import { TrendingDown, X, AlertCircle, Eye, Trash2, Edit2 } from 'lucide-react';
 
 export default function RunningCosts() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [viewingRecord, setViewingRecord] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [costs, setCosts] = useState(() => {
@@ -206,6 +208,9 @@ export default function RunningCosts() {
         </div>,
         document.body
       )}
-    </div>
+    
+
+  {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

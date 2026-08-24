@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import ViewModal from '../components/ViewModal';
 import { FileText, Search, Download, ArrowUpDown, ChevronUp, ChevronDown } from 'lucide-react';
 
 export default function ClientData() {
   const [invoiceItems, setInvoiceItems] = useState([]);
+  const [viewingRecord, setViewingRecord] = useState(null);
   const [search, setSearch] = useState('');
   const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
 
@@ -208,6 +210,7 @@ export default function ClientData() {
           </table>
         </div>
       </div>
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

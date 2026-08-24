@@ -1,4 +1,5 @@
 import React from 'react';
+import ViewModal from '../components/ViewModal';
 import { HelpCircle } from 'lucide-react';
 
 export default function VendorEnquiries() {
@@ -26,6 +27,7 @@ export default function VendorEnquiries() {
           There are currently no records for Purchase Enquiries. Click the button above to create one.
         </p>
       </div>
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

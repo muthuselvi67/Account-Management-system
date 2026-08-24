@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import ViewModal from '../components/ViewModal';
 import { 
   Users, 
   Wallet, 
@@ -55,6 +56,7 @@ const StatCard = ({ title, value, change, isPositive, icon: Icon, color }) => (
 
 export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
+  const [viewingRecord, setViewingRecord] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -309,6 +311,7 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

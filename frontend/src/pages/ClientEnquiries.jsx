@@ -1,4 +1,5 @@
 import React from 'react';
+import ViewModal from '../components/ViewModal';
 import { HelpCircle } from 'lucide-react';
 
 export default function ClientEnquiries() {
@@ -26,6 +27,7 @@ export default function ClientEnquiries() {
           There are currently no records for Client Enquiries. Click the button above to create one.
         </p>
       </div>
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

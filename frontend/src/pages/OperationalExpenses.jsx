@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import ViewModal from '../components/ViewModal';
 import { createPortal } from 'react-dom';
-import { Building2, X, Trash2, Edit2 } from 'lucide-react';
+import { Building2, X, Eye, Trash2, Edit2 } from 'lucide-react';
 
 export default function OperationalExpenses() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [viewingRecord, setViewingRecord] = useState(null);
   const [editingId, setEditingId] = useState(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [expenses, setExpenses] = useState(() => {
@@ -15,7 +17,7 @@ export default function OperationalExpenses() {
 
     return [
       { id: 'OPX-8432', category: '🏢 Rent / Lease', amount: '50,000', date: '2026-07-01', description: 'Office Rent', submittedAt: 'Jul 1, 2026' },
-      { id: 'OPX-9123', category: '⚡ Utilities', amount: '12,500', date: '2026-07-05', description: 'Electricity Bill', submittedAt: 'Jul 5, 2026' },
+      { id: 'OPX-2910', category: '⚡ Utilities', amount: '12,500', date: '2026-07-05', description: 'Electricity Bill', submittedAt: 'Jul 5, 2026' },
       { id: 'OPX-4421', category: '🌐 Internet & Software', amount: '2,000', date: '2026-07-10', description: 'Internet Charges', submittedAt: 'Jul 10, 2026' },
       { id: 'OPX-5122', category: '⚡ Utilities', amount: '1,500', date: '2026-07-12', description: 'Water Bill', submittedAt: 'Jul 12, 2026' },
       { id: 'OPX-8891', category: '🏢 Rent / Lease', amount: '3,50,000', date: '2026-07-15', description: 'Employee Salaries', submittedAt: 'Jul 15, 2026' },
@@ -206,6 +208,9 @@ export default function OperationalExpenses() {
 
       {isModalOpen && createPortal(modal, document.body)}
       {deleteConfirmId && createPortal(deleteModal, document.body)}
-    </div>
+    
+
+  {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

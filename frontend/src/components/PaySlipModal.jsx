@@ -173,7 +173,9 @@ export default function PaySlipModal({ salary, onClose }) {
     };
     const fmtC = (v) => 'Rs. ' + Number(pn(v)).toLocaleString('en-IN', { minimumFractionDigits: 2 });
     try { doc.addImage(LOGO_BASE64, 'PNG', 14, 10, 40, 12); } catch (e) { }
-    addText('Pay-slip', 105, 20, 18, true, 'center', dark);
+    addText('Pay-slip', 105, 18, 18, true, 'center', dark);
+    const companyName = JSON.parse(localStorage.getItem('learnlike_company_profile') || '{}').name || 'LearnLike • TDELVE • Deskjobs • Lanternet';
+    addText(companyName, 105, 23, 8, true, 'center', grey);
     doc.setDrawColor(purple[0], purple[1], purple[2]); doc.setLineWidth(0.5); doc.line(14, 26, 196, 26);
     let y = 34;
 
@@ -303,9 +305,14 @@ export default function PaySlipModal({ salary, onClose }) {
             {/* Logo + tagline */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 220 }}>
               <img src={LOGO_BASE64} alt="Learnlike" style={{ height: 50, objectFit: 'contain' }} />
-              <p style={{ margin: 0, fontSize: '0.7rem', color: '#94a3b8', fontStyle: 'italic', lineHeight: 1.4 }}>
-                Empowering Learners,<br />Building Futures
-              </p>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <p style={{ margin: 0, fontSize: '0.7rem', color: '#94a3b8', fontStyle: 'italic', lineHeight: 1.4 }}>
+                  Empowering Learners, Building Futures
+                </p>
+                <p style={{ margin: 0, fontSize: '0.65rem', color: '#64748b', fontWeight: 'bold', marginTop: 2 }}>
+                  {JSON.parse(localStorage.getItem('learnlike_company_profile') || '{}').name || 'LearnLike • TDELVE • Deskjobs • Lanternet'}
+                </p>
+              </div>
             </div>
             {/* Decorated title */}
             <div style={{ display: 'flex', alignItems: 'center', gap: 8, flex: 1, justifyContent: 'center' }}>

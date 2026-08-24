@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
+import ViewModal from '../components/ViewModal';
 import { createPortal } from 'react-dom';
-import { FileCheck, Plus, Search, Calendar, Hash, Building2, ShoppingCart, DollarSign, Activity, AlignLeft, Check, Trash2, X } from 'lucide-react';
+import { FileCheck, Plus, Search, Calendar, Hash, Building2, ShoppingCart, DollarSign, Activity, AlignLeft, Check, Eye, Trash2, X } from 'lucide-react';
 
 export default function VendorInvoices() {
   const [records, setRecords] = useState(() => {
@@ -13,6 +14,7 @@ export default function VendorInvoices() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [viewingRecord, setViewingRecord] = useState(null);
 
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
@@ -185,8 +187,8 @@ export default function VendorInvoices() {
                     <td className="py-4 px-6">
                       {getStatusBadge(record.status)}
                     </td>
-                    <td className="py-4 px-6 text-right">
-                      <button 
+                    <td className="py-4 px-6 text-right"><div className="flex items-center justify-end gap-1">
+                        <button 
                         onClick={() => handleEdit(record)}
                         className="p-2 text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 rounded-lg transition-colors inline-flex mr-1"
                         title="Edit Invoice"
@@ -199,8 +201,7 @@ export default function VendorInvoices() {
                         title="Delete Invoice"
                       >
                         <Trash2 size={18} />
-                      </button>
-                    </td>
+                      </button></div></td>
                   </tr>
                 ))}
               </tbody>
@@ -365,6 +366,9 @@ export default function VendorInvoices() {
           </div>
         </div>
       , document.body)}
-    </div>
+    
+      
+  {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ViewModal from '../components/ViewModal';
 import { Link } from 'react-router-dom';
 import { 
   MessageSquare, 
@@ -113,6 +114,7 @@ const vendorModules = [
 
 export default function CompaniesHub() {
   const [transactions, setTransactions] = useState([]);
+  const [viewingRecord, setViewingRecord] = useState(null);
 
   useEffect(() => {
     let allTx = [];
@@ -190,7 +192,7 @@ export default function CompaniesHub() {
                 <th className="px-6 py-4 font-medium">Type</th>
                 <th className="px-6 py-4 font-medium">Reference</th>
                 <th className="px-6 py-4 font-medium">Vendor</th>
-                <th className="px-6 py-4 font-medium text-right">Amount</th>
+                <th className="px-6 py-4 font-medium">Amount</th>
                 <th className="px-6 py-4 font-medium">Status</th>
               </tr>
             </thead>
@@ -211,7 +213,7 @@ export default function CompaniesHub() {
                     </td>
                     <td className="px-6 py-4 text-sm font-bold text-slate-700 dark:text-slate-300">{tx.reference}</td>
                     <td className="px-6 py-4 text-sm text-slate-700 dark:text-slate-300">{tx.entity}</td>
-                    <td className="px-6 py-4 text-sm font-bold text-slate-900 dark:text-white text-right">
+                    <td className="px-6 py-4 text-sm font-bold text-slate-900 dark:text-white">
                       ₹{tx.amount.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                     </td>
                     <td className="px-6 py-4">
@@ -238,6 +240,7 @@ export default function CompaniesHub() {
           </table>
         </div>
       </div>
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

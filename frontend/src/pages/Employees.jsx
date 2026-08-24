@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import { Search, Plus, MoreVertical, Edit2, Trash2, FileText, Download, RefreshCw, UserX, UserCheck, User, Mail, Building, Briefcase, Shield, Calendar, DollarSign, Phone, Check, X } from 'lucide-react';
+import ViewModal from '../components/ViewModal';
+import { Search, Plus, MoreVertical, Edit2, Trash2, FileText, Download, RefreshCw, UserX, Eye, UserCheck, User, Mail, Building, Briefcase, Shield, Calendar, DollarSign, Phone, Check, X } from 'lucide-react';
 
 export default function Employees() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [viewingRecord, setViewingRecord] = useState(null);
   const [departmentFilter, setDepartmentFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -496,6 +498,9 @@ Status       : ${emp.status}
           </div>
         </div>
       )}
-    </div>
+    
+
+  {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import ViewModal from '../components/ViewModal';
 import { User, Lock, Bell, Shield, Camera, Save, Check, Loader2 } from 'lucide-react';
 
 export default function Settings() {
   const [activeTab, setActiveTab] = useState('profile');
+  const [viewingRecord, setViewingRecord] = useState(null);
   const [isSaving, setIsSaving] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -195,6 +197,7 @@ export default function Settings() {
           )}
         </div>
       </div>
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

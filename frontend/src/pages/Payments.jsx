@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import ViewModal from '../components/ViewModal';
 import { createPortal } from 'react-dom';
 import { CreditCard, X, Search, Download, Banknote, Landmark, Smartphone, TrendingUp, Clock, CheckCircle2, IndianRupee } from 'lucide-react';
 
@@ -15,6 +16,7 @@ export default function Payments() {
     return saved ? JSON.parse(saved) : INITIAL;
   });
   const [search, setSearch] = useState('');
+  const [viewingRecord, setViewingRecord] = useState(null);
   const [statusFilter, setStatusFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [newPay, setNewPay] = useState({ id: '', payer: '', amount: '', method: 'UPI', date: '', ref: '', status: 'Completed', note: '' });
@@ -237,6 +239,7 @@ export default function Payments() {
       </div>
 
       {isModalOpen && createPortal(modal, document.body)}
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

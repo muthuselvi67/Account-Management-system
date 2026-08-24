@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
+import ViewModal from '../components/ViewModal';
 import { createPortal } from 'react-dom';
-import { FileText, X, Plus, Search, Calendar, Hash, Building2, Briefcase, DollarSign, Percent, Activity, AlignLeft, Check, Trash2, ArrowLeft } from 'lucide-react';
+import { FileText, X, Plus, Search, Calendar, Hash, Building2, Briefcase, DollarSign, Percent, Activity, AlignLeft, Check, Eye, Trash2, ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 export default function VendorQuotations() {
@@ -14,6 +15,7 @@ export default function VendorQuotations() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [viewingRecord, setViewingRecord] = useState(null);
 
   const [formData, setFormData] = useState({
     date: new Date().toISOString().split('T')[0],
@@ -212,8 +214,8 @@ export default function VendorQuotations() {
                     <td className="py-4 px-6">
                       {getStatusBadge(record.status)}
                     </td>
-                    <td className="py-4 px-6 text-right">
-                      <button 
+                    <td className="py-4 px-6 text-right"><div className="flex items-center justify-end gap-1">
+                        <button 
                         onClick={() => handleEdit(record)}
                         className="p-2 text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 rounded-lg transition-colors inline-flex mr-1"
                         title="Edit Quotation"
@@ -226,8 +228,7 @@ export default function VendorQuotations() {
                         title="Delete Quotation"
                       >
                         <Trash2 size={18} />
-                      </button>
-                    </td>
+                      </button></div></td>
                   </tr>
                 ))}
               </tbody>
@@ -413,6 +414,9 @@ export default function VendorQuotations() {
           </div>
         </div>
       , document.body)}
-    </div>
+    
+      
+  {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

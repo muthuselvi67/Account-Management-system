@@ -1,8 +1,10 @@
-import { useState } from 'react';
-import { Search, Plus, Shield, User, Trash2, Edit2, X } from 'lucide-react';
+﻿import { useState } from 'react';
+import ViewModal from '../components/ViewModal';
+import { Search, Plus, Shield, User, Eye, Trash2, Edit2, X } from 'lucide-react';
 
 export default function Users() {
   const [searchTerm, setSearchTerm] = useState('');
+  const [viewingRecord, setViewingRecord] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
@@ -206,7 +208,8 @@ export default function Users() {
               <button onClick={confirmDeleteUser} className="flex-1 btn-primary bg-violet-600 hover:bg-violet-700 py-2.5 border-0">Yes, Delete</button>
             </div>
           </div>
-        </div>
+          {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
       )}
     </>
   );

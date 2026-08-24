@@ -68,6 +68,10 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
         return { title: 'Salaries', subtitle: 'Manage employee payroll and salaries' };
       case '/invoices':
         return { title: 'Invoices', subtitle: 'Generate and manage client invoices' };
+      case '/create-invoice':
+        return { title: 'Create Invoice', subtitle: 'Generate and send a new invoice to a client' };
+      case '/invoice-history':
+        return { title: 'Invoice History', subtitle: 'View and manage previously generated invoices' };
       case '/reports':
         return { title: 'Reports', subtitle: 'View financial and operational reports' };
       case '/users':
@@ -115,7 +119,15 @@ export default function Topbar({ toggleSidebar, openSettings, isDark, toggleThem
   return (
     <>
       <header className="h-20 bg-white/90 dark:bg-zinc-950/90 backdrop-blur-md border-b border-slate-200 dark:border-dark-700 px-6 flex items-center justify-between sticky top-0 z-30">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <button
+            onClick={() => navigate(-1)}
+            className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-dark-800 rounded-lg transition-colors"
+            title="Go Back"
+          >
+            <ArrowLeft size={24} />
+          </button>
+          
           <button
             onClick={toggleSidebar}
             className="p-2 text-slate-500 hover:bg-slate-100 dark:hover:bg-dark-800 rounded-lg transition-colors"

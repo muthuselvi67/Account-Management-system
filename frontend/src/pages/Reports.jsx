@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ViewModal from '../components/ViewModal';
 import { FileText, Download, TrendingUp, PieChart, Users, DollarSign, Calendar } from 'lucide-react';
 import UniversalReportModal from '../components/UniversalReportModal';
 
@@ -283,6 +284,7 @@ const reportConfigs = {
 
 export default function Reports() {
   const [selectedReportConfig, setSelectedReportConfig] = useState(null);
+  const [viewingRecord, setViewingRecord] = useState(null);
 
   const reports = [
     {
@@ -380,6 +382,7 @@ export default function Reports() {
           onClose={() => setSelectedReportConfig(null)} 
         />
       )}
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

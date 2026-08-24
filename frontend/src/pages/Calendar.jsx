@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ViewModal from '../components/ViewModal';
 import { Plus, Edit2, Trash2, Calendar as CalendarIcon, X } from 'lucide-react';
 
 export default function Calendar() {
@@ -16,6 +17,7 @@ export default function Calendar() {
   ]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [viewingRecord, setViewingRecord] = useState(null);
   const [editingHolidayId, setEditingHolidayId] = useState(null);
   const [newHoliday, setNewHoliday] = useState({
     name: '',
@@ -220,6 +222,7 @@ export default function Calendar() {
           </div>
         </div>
       )}
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

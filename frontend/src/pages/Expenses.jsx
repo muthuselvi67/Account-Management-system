@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import ViewModal from '../components/ViewModal';
 import { Plus, TrendingDown, Receipt, Building, Lightbulb, Wifi, Megaphone, MoreVertical, X, Trash2, Edit2 } from 'lucide-react';
 
 export default function Expenses() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [viewingRecord, setViewingRecord] = useState(null);
   const [newExpense, setNewExpense] = useState({ category: '', amount: '', date: '', desc: '' });
   const [activeMenu, setActiveMenu] = useState(null);
   const [editingExpenseId, setEditingExpenseId] = useState(null);
@@ -216,6 +218,7 @@ export default function Expenses() {
           </div>
         </div>
       )}
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

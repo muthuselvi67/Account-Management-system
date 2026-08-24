@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import ViewModal from '../components/ViewModal';
 import { createPortal } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
-import { FileText, X, Search, Download, Printer, CheckCircle2, Clock, AlertCircle, IndianRupee } from 'lucide-react';
+import { FileText, X, Search, Download, Printer, CheckCircle2, Clock, AlertCircle, IndianRupee, Edit2, Trash2 } from 'lucide-react';
 
 const INITIAL = [
   { id: 'INV-2026-001', client: 'Rahul Sharma', date: '2026-07-20', dueDate: '2026-08-20', base: 15000, gst: 2700, total: 17700, status: 'Paid', note: 'Course fee - July' },
@@ -17,33 +18,58 @@ export default function Invoices() {
     return saved ? JSON.parse(saved) : INITIAL;
   });
   const [search, setSearch] = useState('');
+  const [viewingRecord, setViewingRecord] = useState(null);
   const [statusFilter, setStatusFilter] = useState('All');
+  const [companyFilter, setCompanyFilter] = useState('All');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [newInv, setNewInv] = useState({ client: '', base: '', gstRate: '18', date: '', dueDate: '', status: 'Unpaid', note: '' });
 
   useEffect(() => { localStorage.setItem('invoicesData', JSON.stringify(invoices)); }, [invoices]);
 
-  const handleCreate = () => {
+  const handleSaveInvoice = () => {
     if (!newInv.client || !newInv.base) return;
     const base = parseFloat(newInv.base) || 0;
     const gst = Math.round(base * parseFloat(newInv.gstRate) / 100);
     const total = base + gst;
-    const inv = {
-      ...newInv, base, gst, total,
-      id: `INV-2026-${String(invoices.length + 1).padStart(3, '0')}`,
-    };
-    setInvoices([inv, ...invoices]);
+    
+    if (editingId) {
+      setInvoices(invoices.map(inv => inv.id === editingId ? { ...inv, ...newInv, base, gst, total } : inv));
+    } else {
+      const issuingCompany = JSON.parse(localStorage.getItem('learnlike_company_profile') || '{}').name || 'LearnLike';
+      const inv = {
+        ...newInv, base, gst, total,
+        id: `INV-2026-${String(invoices.length + 1).padStart(3, '0')}`,
+        issuingCompany
+      };
+      setInvoices([inv, ...invoices]);
+    }
     setIsModalOpen(false);
     setNewInv({ client: '', base: '', gstRate: '18', date: '', dueDate: '', status: 'Unpaid', note: '' });
+    setEditingId(null);
+  };
+
+  const handleEdit = (inv) => {
+    setNewInv({ client: inv.client, base: inv.base, gstRate: inv.gstRate || '18', date: inv.date, dueDate: inv.dueDate, status: inv.status, note: inv.note });
+    setEditingId(inv.id);
+    setIsModalOpen(true);
+  };
+  
+  const handleDelete = (id) => {
+    if (confirm('Are you sure you want to delete this invoice?')) {
+      setInvoices(invoices.filter(inv => inv.id !== id));
+    }
   };
 
   const handlePrint = (inv) => {
     const w = window.open('', '_blank');
+    const company = inv.issuingCompany || 'LearnLike';
     w.document.write(`
       <html><head><title>Invoice ${inv.id}</title>
-      <style>body{font-family:sans-serif;padding:40px;max-width:600px;margin:auto}h2{color:#7c3aed}table{width:100%;border-collapse:collapse;margin-top:20px}td,th{padding:10px;border:1px solid #e2e8f0;text-align:left}.total{font-weight:bold;font-size:18px}</style>
+      <style>body{font-family:sans-serif;padding:40px;max-width:600px;margin:auto}h2{color:#7c3aed;margin-bottom:5px;}.brands{font-size:12px;color:#64748b;margin-bottom:20px;text-transform:uppercase;letter-spacing:1px;font-weight:bold;}table{width:100%;border-collapse:collapse;margin-top:20px}td,th{padding:10px;border:1px solid #e2e8f0;text-align:left}.total{font-weight:bold;font-size:18px}</style>
       </head><body>
       <h2>Invoice</h2>
+      <div class="brands">${company}</div>
       <p><strong>${inv.id}</strong></p>
       <p>Client: ${inv.client}</p>
       <p>Date: ${inv.date} | Due: ${inv.dueDate}</p>
@@ -67,10 +93,12 @@ export default function Invoices() {
     link.click();
   };
 
-  const filtered = invoices.filter(i =>
-    (statusFilter === 'All' || i.status === statusFilter) &&
-    (i.client.toLowerCase().includes(search.toLowerCase()) || i.id.toLowerCase().includes(search.toLowerCase()))
-  );
+  const filtered = invoices.filter(i => {
+    const iComp = i.issuingCompany || 'LearnLike';
+    return (statusFilter === 'All' || i.status === statusFilter) &&
+           (companyFilter === 'All' || iComp === companyFilter) &&
+           (i.client.toLowerCase().includes(search.toLowerCase()) || i.id.toLowerCase().includes(search.toLowerCase()));
+  });
 
   const fmt = (n) => `₹${Number(n).toLocaleString('en-IN')}`;
   const totalInvoiced = invoices.reduce((s, i) => s + i.total, 0);
@@ -97,8 +125,8 @@ export default function Invoices() {
       <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', zIndex: 9999, width: 'min(30rem, calc(100vw - 2rem))' }}>
         <div className="bg-white dark:bg-dark-900 rounded-2xl shadow-2xl w-full overflow-hidden max-h-[90vh] flex flex-col">
           <div className="p-5 border-b border-slate-100 dark:border-dark-800 flex justify-between items-center">
-            <h2 className="text-lg font-bold text-slate-800 dark:text-white">Create New Invoice</h2>
-            <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slateink-600"><X size={20} /></button>
+            <h2 className="text-lg font-bold text-slate-800 dark:text-white">{editingId ? 'Edit Invoice' : 'Create New Invoice'}</h2>
+            <button onClick={() => { setIsModalOpen(false); setEditingId(null); setNewInv({ client: '', base: '', gstRate: '18', date: '', dueDate: '', status: 'Unpaid', note: '' }); }} className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300"><X size={20} /></button>
           </div>
           <div className="p-6 space-y-4 overflow-y-auto">
             <div>
@@ -149,7 +177,7 @@ export default function Invoices() {
               <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Note (optional)</label>
               <textarea className="input-field resize-none h-16" value={newInv.note} onChange={(e) => setNewInv({ ...newInv, note: e.target.value })}></textarea>
             </div>
-            <button onClick={handleCreate} className="btn-primary w-full mt-2 py-2.5">Create Invoice</button>
+            <button onClick={handleSaveInvoice} className="btn-primary w-full mt-2 py-2.5">{editingId ? 'Save Changes' : 'Create Invoice'}</button>
           </div>
         </div>
       </div>
@@ -214,7 +242,18 @@ export default function Invoices() {
           <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input type="text" className="input-field pl-9" placeholder="Search by client or invoice ID..." value={search} onChange={(e) => setSearch(e.target.value)} />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 overflow-x-auto pb-1 sm:pb-0">
+          <select 
+            className="input-field py-2 bg-white dark:bg-dark-800 border-slate-200 dark:border-dark-700 min-w-[140px]" 
+            value={companyFilter} 
+            onChange={(e) => setCompanyFilter(e.target.value)}
+          >
+            <option value="All">All Companies</option>
+            <option value="LearnLike">LearnLike</option>
+            <option value="TDELVE">TDELVE</option>
+            <option value="Deskjobs">Deskjobs</option>
+            <option value="Lanternet">Lanternet</option>
+          </select>
           {['All', 'Paid', 'Unpaid', 'Overdue'].map(s => (
             <button key={s} onClick={() => setStatusFilter(s)}
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all border ${statusFilter === s ? 'bg-violet-600 border-violet-600 text-white shadow-sm' : 'bg-white dark:bg-dark-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-dark-700 hover:bg-slate-50 dark:hover:bg-dark-800/80'}`}>
@@ -238,7 +277,7 @@ export default function Invoices() {
                 <th className="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">GST</th>
                 <th className="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Total</th>
                 <th className="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Status</th>
-                <th className="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Print</th>
+                <th className="p-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-dark-800">
@@ -258,9 +297,17 @@ export default function Invoices() {
                   <td className="p-4 font-bold text-slate-900 dark:text-white">{fmt(inv.total)}</td>
                   <td className="p-4">{statusBadge(inv.status)}</td>
                   <td className="p-4">
-                    <button onClick={() => handlePrint(inv)} className="p-1.5 rounded-lg bg-slate-100 dark:bg-dark-800 text-slate-500 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors">
-                      <Printer size={15} />
-                    </button>
+                    <div className="flex gap-1">
+                      <button onClick={() => handlePrint(inv)} className="p-1.5 rounded-lg bg-slate-100 dark:bg-dark-800 text-slate-500 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-900/20 transition-colors" title="Print">
+                        <Printer size={15} />
+                      </button>
+                      <button onClick={() => handleEdit(inv)} className="p-1.5 rounded-lg bg-slate-100 dark:bg-dark-800 text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors" title="Edit">
+                        <Edit2 size={15} />
+                      </button>
+                      <button onClick={() => handleDelete(inv.id)} className="p-1.5 rounded-lg bg-slate-100 dark:bg-dark-800 text-slate-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors" title="Delete">
+                        <Trash2 size={15} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
@@ -270,6 +317,7 @@ export default function Invoices() {
       </div>
 
       {isModalOpen && createPortal(modal, document.body)}
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }

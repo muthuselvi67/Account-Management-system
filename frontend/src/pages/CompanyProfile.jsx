@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ViewModal from '../components/ViewModal';
 import { Building2, Save, MapPin, Mail, Phone, Hash, CheckCircle2 } from 'lucide-react';
 
 export default function CompanyProfile() {
@@ -17,6 +18,7 @@ export default function CompanyProfile() {
     };
   });
   const [toast, setToast] = useState({ show: false, message: '' });
+  const [viewingRecord, setViewingRecord] = useState(null);
 
   const showNotification = (message) => {
     setToast({ show: true, message });
@@ -64,7 +66,13 @@ export default function CompanyProfile() {
           
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Company Name</label>
-            <input type="text" className="input-field" value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })} />
+            <select className="input-field py-2" value={profile.name} onChange={(e) => setProfile({ ...profile, name: e.target.value })}>
+              <option value="">Select Company</option>
+              <option value="LearnLike">LearnLike</option>
+              <option value="TDELVE">TDELVE</option>
+              <option value="Deskjobs">Deskjobs</option>
+              <option value="Lanternet">Lanternet</option>
+            </select>
           </div>
 
           <div>
@@ -121,6 +129,7 @@ export default function CompanyProfile() {
           </div>
         </div>
       </div>
-    </div>
+      {viewingRecord && <ViewModal record={viewingRecord} onClose={() => setViewingRecord(null)} />}
+</div>
   );
 }
